@@ -1,9 +1,1 @@
-# CAS · Cas pratiques
-
-Scénarios multi-domaines sur une entreprise fictive : migration, interconnexion DC, incident, troubleshooting.
-
-## Labs du parcours
-
-| ID | Lab | Niveau |
-|----|-----|--------|
-| à venir | | |
+| [CAS-01](CAS-01-ospf-segmentation-paloalto/) | Segmentation sécurisée avec OSPF multi-area et Palo Alto | Avancé |
