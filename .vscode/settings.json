@@ -1,0 +1,9 @@
+{
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.wordWrap": "on",
+  "cSpell.language": "fr,en",
+  "files.associations": { "*.unl": "xml", "*.cfg": "plaintext" },
+  "terminal.integrated.defaultProfile.windows": "Git Bash"
+}

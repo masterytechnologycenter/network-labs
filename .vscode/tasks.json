@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Lab : créer un nouveau lab",
+      "type": "shell",
+      "command": "./scripts/new_lab.sh ${input:track} ${input:id} ${input:slug}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lab : sauvegarder les configs",
+      "type": "shell",
+      "command": "python scripts/backup_configs.py ${input:labPath} --stage ${input:stage}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Site : prévisualiser",
+      "type": "shell",
+      "command": "zensical serve",
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    { "id": "track", "type": "pickString", "description": "Parcours",
+      "options": ["dc-fabric", "securite", "routage-wan", "campus",
+                  "cloud-hybride", "automatisation", "cas-pratiques"] },
+    { "id": "id", "type": "promptString", "description": "Identifiant (ex. DCF-03)" },
+    { "id": "slug", "type": "promptString", "description": "Slug (ex. evpn-multisite)" },
+    { "id": "labPath", "type": "promptString",
+      "description": "Chemin du lab (ex. labs/dc-fabric/DCF-03-evpn-multisite)" },
+    { "id": "stage", "type": "pickString", "description": "Étape", "options": ["initial", "final"] }
+  ]
+}

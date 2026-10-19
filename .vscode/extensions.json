@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "GitHub.vscode-pull-request-github",
+    "yzhang.markdown-all-in-one",
+    "DavidAnson.vscode-markdownlint",
+    "bierner.markdown-mermaid",
+    "hediet.vscode-drawio",
+    "ms-python.python",
+    "redhat.vscode-yaml",
+    "tamasfe.even-better-toml"
+  ]
+}

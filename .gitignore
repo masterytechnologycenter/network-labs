@@ -1,0 +1,22 @@
+# Images d'équipements : redistribution interdite par les licences
+*.qcow2
+*.ova
+*.ovf
+*.vmdk
+*.iso
+*.img
+*.bin
+
+# Secrets et fichiers locaux
+.env
+*.key
+*.pem
+credentials*
+
+# Python / Zensical
+__pycache__/
+.venv/
+site/
+
+# Archives de release (jointes sur GitHub, jamais commitées)
+*.zip
