@@ -1,0 +1,9 @@
+# IP de management des nœuds du lab (utilisées par backup_configs.py)
+# device_type : cisco_nxos, cisco_ios, cisco_xr, paloalto_panos, fortinet...
+devices:
+  - name: SPINE1
+    device_type: cisco_nxos
+    host: 192.168.100.11
+  - name: LEAF1
+    device_type: cisco_nxos
+    host: 192.168.100.21
