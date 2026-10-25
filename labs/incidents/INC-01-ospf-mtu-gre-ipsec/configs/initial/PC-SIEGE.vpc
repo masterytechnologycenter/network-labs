@@ -1,0 +1,3 @@
+set pcname PC-SIEGE
+ip 10.10.0.10/24 10.10.0.1
+save

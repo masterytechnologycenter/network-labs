@@ -1,0 +1,14 @@
+! INC-01 · ISP-R · Internet simulé, sans OSPF
+hostname ISP-R
+!
+interface Ethernet0/0
+ description vers SIEGE
+ ip address 203.0.113.2 255.255.255.252
+ no shutdown
+!
+interface Ethernet0/1
+ description vers LYON
+ ip address 198.51.100.2 255.255.255.252
+ no shutdown
+!
+end
