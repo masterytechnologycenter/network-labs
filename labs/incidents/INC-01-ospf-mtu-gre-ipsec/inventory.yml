@@ -1,0 +1,45 @@
+lab:
+  id: INC-01
+  title: "OSPF bloqué en EXSTART après une migration GRE/IPsec"
+  parcours: incidents
+  niveau: "CCNA → CCNP"
+  ccna_v2: ["3.3.a", "4.5"]
+  plateforme: [PnetLab, EVE-NG]
+  author: "Hilaire TCHOUATEU"
+  video: ""
+  zip: "https://github.com/masterytechnologycenter/network-labs/releases/download/INC-01/INC-01-ospf-mtu-gre-ipsec.zip"
+
+nodes:
+  - name: SIEGE
+    image: "IOL L3"
+    interfaces:
+      Loopback0: 1.1.1.1/32
+      Ethernet0/0: 203.0.113.1/30   # vers ISP-R e0/0
+      Ethernet0/1: 10.10.0.1/24     # vers SW-SIEGE e0/0
+      Tunnel0: 172.16.0.1/30        # GRE/IPsec vers LYON
+  - name: ISP-R
+    image: "IOL L3"
+    interfaces:
+      Ethernet0/0: 203.0.113.2/30   # vers SIEGE e0/0
+      Ethernet0/1: 198.51.100.2/30  # vers LYON e0/0
+  - name: LYON
+    image: "IOL L3"
+    interfaces:
+      Loopback0: 2.2.2.2/32
+      Ethernet0/0: 198.51.100.1/30  # vers ISP-R e0/1
+      Ethernet0/1: 10.20.0.1/24     # vers SW-LYON e0/0
+      Tunnel0: 172.16.0.2/30        # GRE/IPsec vers SIEGE
+  - name: SW-SIEGE
+    image: "IOL L2"
+    links: {Ethernet0/0: "SIEGE e0/1", Ethernet0/1: "PC-SIEGE eth0"}
+  - name: SW-LYON
+    image: "IOL L2"
+    links: {Ethernet0/0: "LYON e0/1", Ethernet0/1: "PC-LYON eth0"}
+  - name: PC-SIEGE
+    image: VPCS
+    ip: 10.10.0.10/24
+    gateway: 10.10.0.1
+  - name: PC-LYON
+    image: VPCS
+    ip: 10.20.0.10/24
+    gateway: 10.20.0.1

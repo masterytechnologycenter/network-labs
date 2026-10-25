@@ -1,0 +1,4 @@
+! INC-01 · SW-SIEGE · IOL L2, configuration par défaut (VLAN 1)
+hostname SW-SIEGE
+!
+end
