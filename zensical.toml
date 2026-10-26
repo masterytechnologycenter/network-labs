@@ -3,7 +3,7 @@ docs_dir = "labs"
 site_url = "https://masterytechnologycenter.github.io/network-labs/"
 site_name = "Mastery Tech Center · Network Labs"
 site_description = "Labs réseau et sécurité : topologies, configs et LLD"
-site_author = "Hilaire Free"
+site_author = "Hilaire TCHOUATEU"
 
 copyright = "Copyright &copy; 2026 Mastery Tech Center"
 
