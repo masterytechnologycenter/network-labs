@@ -1,0 +1,25 @@
+! INC-02 · DIST-SW · configuration initiale
+hostname DIST-SW
+!
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 priority 4096
+!
+vlan 10
+ name ETAGE3
+!
+interface GigabitEthernet0/1
+ description Trunk vers ACC-1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ description PC-2
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast edge
+!
+interface Vlan10
+ ip address 10.10.10.1 255.255.255.0
+ no shutdown
+!
+end

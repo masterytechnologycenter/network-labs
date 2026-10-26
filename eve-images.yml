@@ -1,0 +1,76 @@
+# Noms EXACTS des images installées sur le serveur EVE-NG / PnetLab de l'auteur.
+# Vérification : ls /opt/unetlab/addons/iol/bin/
+iol-l3:
+  type: iol
+  image: "i86bi-linux-l3-adventerprisek9-15.4.2T.bin"
+  ram: 1024
+  nvram: 1024
+  ethernet: 1
+iol-l2:
+  type: iol
+  image: "i86bi-linux-l2-ipbasek9-15.1g.bin"
+  ram: 1024
+  nvram: 1024
+  ethernet: 1
+vpcs:
+  type: vpcs
+vios-l2:
+  type: qemu
+  template: viosl2
+  image: "viosl2-adventerprisek9-m.cml.SSA.high_iron_20180510"
+  cpu: 1
+  ram: 1024
+  ethernet: 8
+  qemu_options: "-machine type=pc,accel=kvm -serial mon:stdio -nographic -no-user-config -nodefaults -rtc base=utc"
+vios-l3:
+  type: qemu
+  template: vios
+  image: "vios-adventerprisek9-m.spa.158-3.m2"
+  cpu: 1
+  ram: 1024
+  ethernet: 4
+  qemu_options: "-machine type=pc,accel=kvm -serial mon:stdio -nographic -no-user-config -nodefaults -rtc base=utc"
+
+# ---- Sécurité et data center (qemu) ----
+# `ifaces` : noms des interfaces dans l'ordre EVE-NG (id = position dans la liste).
+# cpu / ram / ethernet / qemu_options absents = valeurs par défaut du modèle EVE-NG.
+paloalto:
+  type: qemu
+  template: paloalto
+  image: "paloalto-10.2.9"
+  cpu: 2
+  ram: 6144
+  ethernet: 7
+  ifaces: ["mgmt", "eth1/1", "eth1/2", "eth1/3", "eth1/4", "eth1/5", "eth1/6"]
+fortigate:
+  type: qemu
+  template: fortinet
+  image: "fortinet-FGT-V6.46-build1879"
+  cpu: 1
+  ram: 2048
+  ethernet: 4
+  ifaces: ["port1", "port2", "port3", "port4"]
+bigip:
+  type: qemu
+  template: bigip
+  image: "bigip-15.1.2.1-0.0.10.ALL"
+  cpu: 2
+  ram: 8192
+  ethernet: 4
+  ifaces: ["mgmt", "1.1", "1.2", "1.3"]
+nexus9k:
+  type: qemu
+  template: nxosv9k
+  image: "nxosv9k-9300v-9.3.9"
+  cpu: 2
+  ram: 8192
+  ethernet: 8
+  ifaces: ["mgmt0", "e1/1", "e1/2", "e1/3", "e1/4", "e1/5", "e1/6", "e1/7"]
+ise:
+  type: qemu
+  template: ise
+  image: "ise-2.4.0.357"
+  cpu: 4
+  ram: 16384
+  ethernet: 1
+  ifaces: ["eth0"]

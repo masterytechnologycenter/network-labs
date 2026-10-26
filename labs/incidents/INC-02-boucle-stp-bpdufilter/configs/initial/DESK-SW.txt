@@ -1,0 +1,10 @@
+! INC-02 · DESK-SW · simule un switch de bureau non géré (STP désactivé)
+hostname DESK-SW
+!
+no spanning-tree vlan 1
+!
+interface range GigabitEthernet0/0 - 2
+ switchport mode access
+ switchport access vlan 1
+!
+end

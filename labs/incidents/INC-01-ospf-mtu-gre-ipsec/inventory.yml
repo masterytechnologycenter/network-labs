@@ -43,3 +43,39 @@ nodes:
     image: VPCS
     ip: 10.20.0.10/24
     gateway: 10.20.0.1
+
+# Génération du .unl : python scripts/make_unl.py labs/incidents/INC-01-ospf-mtu-gre-ipsec
+eve:
+  name: Incident-01-OSPF-MTU
+  nodes:
+    SIEGE:    {template: iol-l3, icon: Router-3D-Gen1-S.svg,        position: [300, 240]}
+    ISP-R:    {template: iol-l3, icon: Router-3D-Gen1-S.svg,        position: [600, 240]}
+    LYON:     {template: iol-l3, icon: Router-3D-Gen1-S.svg,        position: [900, 240]}
+    SW-SIEGE: {template: iol-l2, icon: Switch-3D-L2-S.svg,          position: [300, 440]}
+    SW-LYON:  {template: iol-l2, icon: Switch-3D-L2-S.svg,          position: [900, 440]}
+    PC-SIEGE: {template: vpcs,   icon: PC-2D-Desktop-Generic-S.svg, position: [300, 640]}
+    PC-LYON:  {template: vpcs,   icon: PC-2D-Desktop-Generic-S.svg, position: [900, 640]}
+  links:
+    - [SIEGE, e0/0, ISP-R, e0/0]
+    - [ISP-R, e0/1, LYON, e0/0]
+    - [SIEGE, e0/1, SW-SIEGE, e0/0]
+    - [SW-SIEGE, e0/1, PC-SIEGE, eth0]
+    - [LYON, e0/1, SW-LYON, e0/0]
+    - [SW-LYON, e0/1, PC-LYON, eth0]
+  zones:
+    - {label: "SIÈGE · OSPF area 0", x: 150, y: 150, w: 330, h: 600, color: "#0B37D4", title_color: "#0B2E8A"}
+    - {label: "WAN OPÉRATEUR", x: 510, y: 150, w: 180, h: 260, color: "#7C8796", opacity: 0.12}
+    - {label: "LYON · OSPF area 0", x: 720, y: 150, w: 330, h: 600, color: "#0B37D4", title_color: "#0B2E8A"}
+  texts:
+    - {x: 150, y: 30, text: "INC-01 · OSPF et MTU GRE/IPsec · Mastery Tech Center", mono: false, bold: true, size: 18, box: false, color: "#05080D"}
+    - {x: 330, y: 105, text: "Tunnel0 · GRE/IPsec · 172.16.0.0/30 (OSPF)", border: "#53AC21", color: "#2B6A10", bold: true}
+    - {x: 372, y: 275, text: "203.0.113.0/30", box: false}
+    - {x: 728, y: 275, text: "198.51.100.0/30", box: false}
+    - {x: 165, y: 300, text: "Lo0 1.1.1.1 (RID)\nTu0 172.16.0.1/30\nip mtu 1476"}
+    - {x: 765, y: 300, text: "Lo0 2.2.2.2 (RID)\nTu0 172.16.0.2/30\nip mtu 1400"}
+    - {x: 530, y: 330, text: "Internet simulé\nsans OSPF", mono: false}
+    - {x: 380, y: 455, text: "LAN 10.10.0.0/24", box: false}
+    - {x: 760, y: 455, text: "LAN 10.20.0.0/24", box: false}
+    - {x: 260, y: 700, text: "10.10.0.10/24", box: false}
+    - {x: 860, y: 700, text: "10.20.0.10/24", box: false}
+    - {x: 150, y: 765, text: "Images : IOL L3 (routeurs), IOL L2 (switchs), VPCS (PC) · labs.masterytechcenter.com", mono: false, box: false, color: "#4A5566"}
