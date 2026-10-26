@@ -6,7 +6,7 @@ Labs réseau et sécurité reproductibles sur PnetLab / EVE-NG :
 topologie, configurations initiales et finales, LLD et diagrammes.
 Les images d'équipements ne sont pas fournies.
 
-📘 Documentation : https://masterytechnologycenter.github.io/network-labs/
+📘 Documentation : https://labs.masterytechcenter.com/
 
 ## Data Center Fabric
 | ID | Lab | Niveau | Vidéo | Zip |
