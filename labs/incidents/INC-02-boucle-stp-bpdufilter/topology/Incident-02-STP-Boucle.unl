@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<lab name="Incident-02-STP-Boucle" id="5c8cc829-9d1a-5d2c-88cd-ef326682d512" version="1" scripttimeout="300" lock="0" author="Hilaire TCHOUATEU">
+  <description>INC-02 · Boucle de niveau 2 : tout un étage coupé par un switch de bureau</description>
+  <topology>
+    <nodes>
+      <node id="1" name="DIST-SW" type="qemu" template="viosl2" image="viosl2-adventerprisek9-m.cml.SSA.high_iron_20180510" uuid="4ba0390d-afbd-53e7-8031-415be2eb98b8" cpu="1" ram="1024" ethernet="8" qemu_options="-machine type=pc,accel=kvm -serial mon:stdio -nographic -no-user-config -nodefaults -rtc base=utc" qemu_arch="x86_64" console="telnet" delay="0" icon="Switch-3D-L3-S.svg" config="1" left="600" top="160">
+        <interface id="1" name="Gi0/1" type="ethernet" network_id="1"/>
+        <interface id="2" name="Gi0/2" type="ethernet" network_id="2"/>
+      </node>
+      <node id="2" name="PC-2" type="vpcs" template="vpcs" image="" ethernet="1" console="telnet" delay="0" icon="PC-2D-Desktop-Generic-S.svg" config="1" left="900" top="160">
+        <interface id="0" name="eth0" type="ethernet" network_id="2"/>
+      </node>
+      <node id="3" name="ACC-1" type="qemu" template="viosl2" image="viosl2-adventerprisek9-m.cml.SSA.high_iron_20180510" uuid="5b4ba9dd-f711-5970-9a70-b077b5570401" cpu="1" ram="1024" ethernet="8" qemu_options="-machine type=pc,accel=kvm -serial mon:stdio -nographic -no-user-config -nodefaults -rtc base=utc" qemu_arch="x86_64" console="telnet" delay="0" icon="Switch-3D-L2-S.svg" config="1" left="600" top="380">
+        <interface id="0" name="Gi0/0" type="ethernet" network_id="1"/>
+        <interface id="1" name="Gi0/1" type="ethernet" network_id="4"/>
+        <interface id="2" name="Gi0/2" type="ethernet" network_id="5"/>
+        <interface id="3" name="Gi0/3" type="ethernet" network_id="3"/>
+      </node>
+      <node id="4" name="PC-1" type="vpcs" template="vpcs" image="" ethernet="1" console="telnet" delay="0" icon="PC-2D-Desktop-Generic-S.svg" config="1" left="300" top="380">
+        <interface id="0" name="eth0" type="ethernet" network_id="3"/>
+      </node>
+      <node id="5" name="DESK-SW" type="qemu" template="viosl2" image="viosl2-adventerprisek9-m.cml.SSA.high_iron_20180510" uuid="34da99b6-44b9-56d3-b691-c49754af8360" cpu="1" ram="1024" ethernet="8" qemu_options="-machine type=pc,accel=kvm -serial mon:stdio -nographic -no-user-config -nodefaults -rtc base=utc" qemu_arch="x86_64" console="telnet" delay="0" icon="Switch-3D-L2-S.svg" config="1" left="600" top="620">
+        <interface id="0" name="Gi0/0" type="ethernet" network_id="4"/>
+        <interface id="1" name="Gi0/1" type="ethernet" network_id="5"/>
+        <interface id="2" name="Gi0/2" type="ethernet" network_id="6"/>
+      </node>
+      <node id="6" name="PC-3" type="vpcs" template="vpcs" image="" ethernet="1" console="telnet" delay="0" icon="PC-2D-Laptop-Generic-S.svg" config="1" left="900" top="620">
+        <interface id="0" name="eth0" type="ethernet" network_id="6"/>
+      </node>
+    </nodes>
+    <networks>
+      <network id="1" type="bridge" name="Net-DIST-SW-ACC-1" left="600" top="270" visibility="0"/>
+      <network id="2" type="bridge" name="Net-DIST-SW-PC-2" left="750" top="160" visibility="0"/>
+      <network id="3" type="bridge" name="Net-ACC-1-PC-1" left="450" top="380" visibility="0"/>
+      <network id="4" type="bridge" name="Net-ACC-1-DESK-SW" left="600" top="500" visibility="0"/>
+      <network id="5" type="bridge" name="Net-ACC-1-DESK-SW" left="600" top="500" visibility="0"/>
+      <network id="6" type="bridge" name="Net-DESK-SW-PC-3" left="750" top="620" visibility="0"/>
+    </networks>
+  </topology>
+  <objects>
+    <textobjects>
+      <textobject id="1" name="CAMPUS · 3e ÉTAGE · VLAN 10 (10.10.10.0/24)" type="square">
+        <data>PGRpdiBpZD0iY3VzdG9tU2hhcGUxIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tU2hhcGUxIGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjEiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMTcwcHg7IHRvcDogNzBweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxOyI+PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjcyMCI+PHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI3MjAiIGZpbGw9IiMwQjM3RDQiIGZpbGwtb3BhY2l0eT0iMC4xIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZT0iIzBCMzdENCIgc3Ryb2tlLWRhc2hhcnJheT0iMTAsNiI+PC9yZWN0Pjwvc3ZnPjwvZGl2Pg==</data>
+      </textobject>
+      <textobject id="2" name="CAMPUS · 3e ÉTAGE · VLAN 10 (10.10.10.0/24) (titre)" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDIiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjIiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMTgwcHg7IHRvcDogNzhweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAxOyBjb2xvcjogIzBCMkU4QTsgZm9udC1mYW1pbHk6IEFyaWFsLCBzYW5zLXNlcmlmOyBmb250LXNpemU6IDE1cHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB3aGl0ZS1zcGFjZTogbm93cmFwOyI+PHAgc3R5bGU9Im1hcmdpbjogMDsiPkNBTVBVUyDCtyAzZSDDiVRBR0UgwrcgVkxBTiAxMCAoMTAuMTAuMTAuMC8yNCk8L3A+PC9kaXY+</data>
+      </textobject>
+      <textobject id="3" name="BUREAU 3.12 · switch non géré" type="square">
+        <data>PGRpdiBpZD0iY3VzdG9tU2hhcGUzIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tU2hhcGUzIGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjMiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogNDcwcHg7IHRvcDogNTYwcHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTsiPjxzdmcgd2lkdGg9IjU2MCIgaGVpZ2h0PSIyMDAiPjxyZWN0IHdpZHRoPSI1NjAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRTUzODNCIiBmaWxsLW9wYWNpdHk9IjAuMDgiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlPSIjRTUzODNCIiBzdHJva2UtZGFzaGFycmF5PSIxMCw2Ij48L3JlY3Q+PC9zdmc+PC9kaXY+</data>
+      </textobject>
+      <textobject id="4" name="BUREAU 3.12 · switch non géré (titre)" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDQiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjQiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogNDgwcHg7IHRvcDogNTY4cHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTAwMTsgY29sb3I6ICNCMzI2MUU7IGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxNXB4OyBmb250LXdlaWdodDogYm9sZDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij5CVVJFQVUgMy4xMiDCtyBzd2l0Y2ggbm9uIGfDqXLDqTwvcD48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="5" name="INC-02 · Boucle STP · Mastery " type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDUiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjUiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMTcwcHg7IHRvcDogMjBweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzA1MDgwRDsgIGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxOHB4OyBmb250LXdlaWdodDogYm9sZDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij5JTkMtMDIgwrcgQm91Y2xlIFNUUCDCtyBNYXN0ZXJ5IFRlY2ggQ2VudGVyPC9wPjwvZGl2Pg==</data>
+      </textobject>
+      <textobject id="6" name="Root bridge VLAN 10 (priorité " type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDYiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjYiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMzAwcHg7IHRvcDogMTcwcHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTAwMjsgY29sb3I6ICMxRTI1MzM7IGJhY2tncm91bmQtY29sb3I6ICNmZmZmZmY7IGJvcmRlcjogMXB4IHNvbGlkICM4RDk5QUI7IGJvcmRlci1yYWRpdXM6IDZweDsgcGFkZGluZzogNHB4IDhweDsgZm9udC1mYW1pbHk6ICdEZWphVnUgU2FucyBNb25vJywgQ29uc29sYXMsIG1vbm9zcGFjZTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogbm9ybWFsOyB3aGl0ZS1zcGFjZTogbm93cmFwOyI+PHAgc3R5bGU9Im1hcmdpbjogMDsiPlJvb3QgYnJpZGdlIFZMQU4gMTAgKHByaW9yaXTDqSA0MDk2KTxicj5TVkkgMTAuMTAuMTAuMS8yNDwvcD48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="7" name="Gi0/1-3 : access VLAN 10" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDciIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjciIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogNzAwcHg7IHRvcDogMzg1cHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTAwMjsgY29sb3I6ICMxRTI1MzM7IGJhY2tncm91bmQtY29sb3I6ICNmZmZmZmY7IGJvcmRlcjogMXB4IHNvbGlkICNFNTM4M0I7IGJvcmRlci1yYWRpdXM6IDZweDsgcGFkZGluZzogNHB4IDhweDsgZm9udC1mYW1pbHk6ICdEZWphVnUgU2FucyBNb25vJywgQ29uc29sYXMsIG1vbm9zcGFjZTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogbm9ybWFsOyB3aGl0ZS1zcGFjZTogbm93cmFwOyI+PHAgc3R5bGU9Im1hcmdpbjogMDsiPkdpMC8xLTMgOiBhY2Nlc3MgVkxBTiAxMDxicj5zcGFubmluZy10cmVlIHBvcnRmYXN0IGVkZ2U8YnI+c3Bhbm5pbmctdHJlZSBicGR1ZmlsdGVyIGVuYWJsZTwvcD48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="8" name="trunk 802.1Q" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDgiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjgiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogNjQwcHg7IHRvcDogMjkwcHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTAwMjsgY29sb3I6ICMyNjM2NEY7ICBmb250LWZhbWlseTogJ0RlamFWdSBTYW5zIE1vbm8nLCBDb25zb2xhcywgbW9ub3NwYWNlOyBmb250LXNpemU6IDEycHg7IGZvbnQtd2VpZ2h0OiBub3JtYWw7IHdoaXRlLXNwYWNlOiBub3dyYXA7Ij48cCBzdHlsZT0ibWFyZ2luOiAwOyI+dHJ1bmsgODAyLjFRPC9wPjwvZGl2Pg==</data>
+      </textobject>
+      <textobject id="9" name="Deux câbles, deux prises mural" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDkiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjkiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogNjQ1cHg7IHRvcDogNDcwcHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTAwMjsgY29sb3I6ICNCMzI2MUU7IGJhY2tncm91bmQtY29sb3I6ICNmZmZmZmY7IGJvcmRlcjogMXB4IHNvbGlkICNFNTM4M0I7IGJvcmRlci1yYWRpdXM6IDZweDsgcGFkZGluZzogNHB4IDhweDsgZm9udC1mYW1pbHk6ICdEZWphVnUgU2FucyBNb25vJywgQ29uc29sYXMsIG1vbm9zcGFjZTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogbm9ybWFsOyB3aGl0ZS1zcGFjZTogbm93cmFwOyI+PHAgc3R5bGU9Im1hcmdpbjogMDsiPkRldXggY8OiYmxlcywgZGV1eCBwcmlzZXMgbXVyYWxlcyA6PGJyPkFDQy0xIEdpMC8xIOKGkiBERVNLLVNXIEdpMC8wPGJyPkFDQy0xIEdpMC8yIOKGkiBERVNLLVNXIEdpMC8xPC9wPjwvZGl2Pg==</data>
+      </textobject>
+      <textobject id="10" name="STP désactivé :" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDEwIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tVGV4dCBjb250ZXh0LW1lbnUganRrLWRyYWdnYWJsZSIgZGF0YS1wYXRoPSIxMCIgc3R5bGU9ImRpc3BsYXk6IGlubGluZTsgcG9zaXRpb246IGFic29sdXRlOyBsZWZ0OiA0OTBweDsgdG9wOiA2OTBweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzFFMjUzMzsgYmFja2dyb3VuZC1jb2xvcjogI2ZmZmZmZjsgYm9yZGVyOiAxcHggc29saWQgI0U1MzgzQjsgYm9yZGVyLXJhZGl1czogNnB4OyBwYWRkaW5nOiA0cHggOHB4OyBmb250LWZhbWlseTogJ0RlamFWdSBTYW5zIE1vbm8nLCBDb25zb2xhcywgbW9ub3NwYWNlOyBmb250LXNpemU6IDEycHg7IGZvbnQtd2VpZ2h0OiBub3JtYWw7IHdoaXRlLXNwYWNlOiBub3dyYXA7Ij48cCBzdHlsZT0ibWFyZ2luOiAwOyI+U1RQIGTDqXNhY3RpdsOpIDo8YnI+c2ltdWxlIHVuIHN3aXRjaDxicj5ub24gZ8OpcsOpPC9wPjwvZGl2Pg==</data>
+      </textobject>
+      <textobject id="11" name="10.10.10.11/24" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDExIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tVGV4dCBjb250ZXh0LW1lbnUganRrLWRyYWdnYWJsZSIgZGF0YS1wYXRoPSIxMSIgc3R5bGU9ImRpc3BsYXk6IGlubGluZTsgcG9zaXRpb246IGFic29sdXRlOyBsZWZ0OiAyMzBweDsgdG9wOiA0NTVweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzFFMjUzMzsgIGZvbnQtZmFtaWx5OiAnRGVqYVZ1IFNhbnMgTW9ubycsIENvbnNvbGFzLCBtb25vc3BhY2U7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IG5vcm1hbDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij4xMC4xMC4xMC4xMS8yNDwvcD48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="12" name="10.10.10.12/24" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDEyIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tVGV4dCBjb250ZXh0LW1lbnUganRrLWRyYWdnYWJsZSIgZGF0YS1wYXRoPSIxMiIgc3R5bGU9ImRpc3BsYXk6IGlubGluZTsgcG9zaXRpb246IGFic29sdXRlOyBsZWZ0OiA4NzBweDsgdG9wOiAyMjVweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzFFMjUzMzsgIGZvbnQtZmFtaWx5OiAnRGVqYVZ1IFNhbnMgTW9ubycsIENvbnNvbGFzLCBtb25vc3BhY2U7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IG5vcm1hbDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij4xMC4xMC4xMC4xMi8yNDwvcD48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="13" name="10.10.10.13/24" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDEzIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tVGV4dCBjb250ZXh0LW1lbnUganRrLWRyYWdnYWJsZSIgZGF0YS1wYXRoPSIxMyIgc3R5bGU9ImRpc3BsYXk6IGlubGluZTsgcG9zaXRpb246IGFic29sdXRlOyBsZWZ0OiA4NjBweDsgdG9wOiA2OTVweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzFFMjUzMzsgIGZvbnQtZmFtaWx5OiAnRGVqYVZ1IFNhbnMgTW9ubycsIENvbnNvbGFzLCBtb25vc3BhY2U7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IG5vcm1hbDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij4xMC4xMC4xMC4xMy8yNDwvcD48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="14" name="Images : vIOS L2 (switchs), VP" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDE0IiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tVGV4dCBjb250ZXh0LW1lbnUganRrLWRyYWdnYWJsZSIgZGF0YS1wYXRoPSIxNCIgc3R5bGU9ImRpc3BsYXk6IGlubGluZTsgcG9zaXRpb246IGFic29sdXRlOyBsZWZ0OiAxNzBweDsgdG9wOiA4MDVweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzRBNTU2NjsgIGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogbm9ybWFsOyB3aGl0ZS1zcGFjZTogbm93cmFwOyI+PHAgc3R5bGU9Im1hcmdpbjogMDsiPkltYWdlcyA6IHZJT1MgTDIgKHN3aXRjaHMpLCBWUENTIChQQykgwrcgbGFicy5tYXN0ZXJ5dGVjaGNlbnRlci5jb208L3A+PC9kaXY+</data>
+      </textobject>
+    </textobjects>
+    <configs>
+      <config id="1">ISBJTkMtMDIgwrcgRElTVC1TVyDCtyBjb25maWd1cmF0aW9uIGluaXRpYWxlCmhvc3RuYW1lIERJU1QtU1cKIQpzcGFubmluZy10cmVlIG1vZGUgcmFwaWQtcHZzdApzcGFubmluZy10cmVlIHZsYW4gMTAgcHJpb3JpdHkgNDA5NgohCnZsYW4gMTAKIG5hbWUgRVRBR0UzCiEKaW50ZXJmYWNlIEdpZ2FiaXRFdGhlcm5ldDAvMQogZGVzY3JpcHRpb24gVHJ1bmsgdmVycyBBQ0MtMQogc3dpdGNocG9ydCB0cnVuayBlbmNhcHN1bGF0aW9uIGRvdDFxCiBzd2l0Y2hwb3J0IG1vZGUgdHJ1bmsKIQppbnRlcmZhY2UgR2lnYWJpdEV0aGVybmV0MC8yCiBkZXNjcmlwdGlvbiBQQy0yCiBzd2l0Y2hwb3J0IG1vZGUgYWNjZXNzCiBzd2l0Y2hwb3J0IGFjY2VzcyB2bGFuIDEwCiBzcGFubmluZy10cmVlIHBvcnRmYXN0IGVkZ2UKIQppbnRlcmZhY2UgVmxhbjEwCiBpcCBhZGRyZXNzIDEwLjEwLjEwLjEgMjU1LjI1NS4yNTUuMAogbm8gc2h1dGRvd24KIQplbmQK</config>
+      <config id="2">c2V0IHBjbmFtZSBQQy0yCmlwIDEwLjEwLjEwLjEyLzI0IDEwLjEwLjEwLjEKc2F2ZQo=</config>
+      <config id="3">ISBJTkMtMDIgwrcgQUNDLTEgwrcgY29uZmlndXJhdGlvbiBpbml0aWFsZSAoY29udGllbnQgbGEgcGFubmUpCmhvc3RuYW1lIEFDQy0xCiEKc3Bhbm5pbmctdHJlZSBtb2RlIHJhcGlkLXB2c3QKIQp2bGFuIDEwCiBuYW1lIEVUQUdFMwohCmludGVyZmFjZSBHaWdhYml0RXRoZXJuZXQwLzAKIGRlc2NyaXB0aW9uIFRydW5rIHZlcnMgRElTVC1TVwogc3dpdGNocG9ydCB0cnVuayBlbmNhcHN1bGF0aW9uIGRvdDFxCiBzd2l0Y2hwb3J0IG1vZGUgdHJ1bmsKIQppbnRlcmZhY2UgcmFuZ2UgR2lnYWJpdEV0aGVybmV0MC8xIC0gMwogZGVzY3JpcHRpb24gUHJpc2VzIG11cmFsZXMgYnVyZWF1IDMuMTIKIHN3aXRjaHBvcnQgbW9kZSBhY2Nlc3MKIHN3aXRjaHBvcnQgYWNjZXNzIHZsYW4gMTAKIHNwYW5uaW5nLXRyZWUgcG9ydGZhc3QgZWRnZQogc3Bhbm5pbmctdHJlZSBicGR1ZmlsdGVyIGVuYWJsZQohCmVuZAo=</config>
+      <config id="4">c2V0IHBjbmFtZSBQQy0xCmlwIDEwLjEwLjEwLjExLzI0IDEwLjEwLjEwLjEKc2F2ZQo=</config>
+      <config id="5">ISBJTkMtMDIgwrcgREVTSy1TVyDCtyBzaW11bGUgdW4gc3dpdGNoIGRlIGJ1cmVhdSBub24gZ8OpcsOpIChTVFAgZMOpc2FjdGl2w6kpCmhvc3RuYW1lIERFU0stU1cKIQpubyBzcGFubmluZy10cmVlIHZsYW4gMQohCmludGVyZmFjZSByYW5nZSBHaWdhYml0RXRoZXJuZXQwLzAgLSAyCiBzd2l0Y2hwb3J0IG1vZGUgYWNjZXNzCiBzd2l0Y2hwb3J0IGFjY2VzcyB2bGFuIDEKIQplbmQK</config>
+      <config id="6">c2V0IHBjbmFtZSBQQy0zCmlwIDEwLjEwLjEwLjEzLzI0IDEwLjEwLjEwLjEKc2F2ZQo=</config>
+    </configs>
+  </objects>
+</lab>

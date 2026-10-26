@@ -1,0 +1,67 @@
+lab:
+  id: INC-02
+  title: "Boucle de niveau 2 : tout un étage coupé par un switch de bureau"
+  parcours: incidents
+  niveau: CCNA
+  ccna_v2: ["2.5.d", "4.7.c"]
+  plateforme: [PnetLab, EVE-NG]
+  author: "Hilaire TCHOUATEU"
+  video: ""
+  zip: "https://github.com/masterytechnologycenter/network-labs/releases/download/INC-02/INC-02-boucle-stp-bpdufilter.zip"
+
+nodes:
+  - name: DIST-SW
+    image: "vIOS L2"
+    interfaces:
+      GigabitEthernet0/1: trunk            # vers ACC-1 Gi0/0
+      GigabitEthernet0/2: access VLAN 10   # vers PC-2 eth0
+      Vlan10: 10.10.10.1/24
+  - name: ACC-1
+    image: "vIOS L2"
+    interfaces:
+      GigabitEthernet0/0: trunk            # vers DIST-SW Gi0/1
+      GigabitEthernet0/1: access VLAN 10   # vers DESK-SW Gi0/0
+      GigabitEthernet0/2: access VLAN 10   # vers DESK-SW Gi0/1 (second câble : la boucle)
+      GigabitEthernet0/3: access VLAN 10   # vers PC-1 eth0
+  - name: DESK-SW
+    image: "vIOS L2"
+    note: "STP désactivé pour simuler un switch non géré"
+    interfaces:
+      GigabitEthernet0/0: "vers ACC-1 Gi0/1"
+      GigabitEthernet0/1: "vers ACC-1 Gi0/2"
+      GigabitEthernet0/2: "vers PC-3 eth0"
+  - {name: PC-1, image: VPCS, ip: 10.10.10.11/24, gateway: 10.10.10.1}
+  - {name: PC-2, image: VPCS, ip: 10.10.10.12/24, gateway: 10.10.10.1}
+  - {name: PC-3, image: VPCS, ip: 10.10.10.13/24, gateway: 10.10.10.1}
+
+# Génération du .unl : python scripts/make_unl.py labs/incidents/INC-02-boucle-stp-bpdufilter
+eve:
+  name: Incident-02-STP-Boucle
+  nodes:
+    DIST-SW: {template: vios-l2, icon: Switch-3D-L3-S.svg,          position: [600, 160]}
+    PC-2:    {template: vpcs,   icon: PC-2D-Desktop-Generic-S.svg, position: [900, 160]}
+    ACC-1:   {template: vios-l2, icon: Switch-3D-L2-S.svg,          position: [600, 380]}
+    PC-1:    {template: vpcs,   icon: PC-2D-Desktop-Generic-S.svg, position: [300, 380]}
+    DESK-SW: {template: vios-l2, icon: Switch-3D-L2-S.svg,          position: [600, 620]}
+    PC-3:    {template: vpcs,   icon: PC-2D-Laptop-Generic-S.svg,  position: [900, 620]}
+  links:
+    - [DIST-SW, Gi0/1, ACC-1, Gi0/0]
+    - [DIST-SW, Gi0/2, PC-2, eth0]
+    - [ACC-1, Gi0/3, PC-1, eth0]
+    - [ACC-1, Gi0/1, DESK-SW, Gi0/0]
+    - [ACC-1, Gi0/2, DESK-SW, Gi0/1]
+    - [DESK-SW, Gi0/2, PC-3, eth0]
+  zones:
+    - {label: "CAMPUS · 3e ÉTAGE · VLAN 10 (10.10.10.0/24)", x: 170, y: 70, w: 900, h: 720, color: "#0B37D4", title_color: "#0B2E8A"}
+    - {label: "BUREAU 3.12 · switch non géré", x: 470, y: 560, w: 560, h: 200, color: "#E5383B", title_color: "#B3261E", opacity: 0.08}
+  texts:
+    - {x: 170, y: 20, text: "INC-02 · Boucle STP · Mastery Tech Center", mono: false, bold: true, size: 18, box: false, color: "#05080D"}
+    - {x: 300, y: 170, text: "Root bridge VLAN 10 (priorité 4096)\nSVI 10.10.10.1/24"}
+    - {x: 700, y: 385, text: "Gi0/1-3 : access VLAN 10\nspanning-tree portfast edge\nspanning-tree bpdufilter enable", border: "#E5383B"}
+    - {x: 640, y: 290, text: "trunk 802.1Q", box: false, color: "#26364F"}
+    - {x: 645, y: 470, text: "Deux câbles, deux prises murales :\nACC-1 Gi0/1 → DESK-SW Gi0/0\nACC-1 Gi0/2 → DESK-SW Gi0/1", border: "#E5383B", color: "#B3261E"}
+    - {x: 490, y: 690, text: "STP désactivé :\nsimule un switch\nnon géré", border: "#E5383B"}
+    - {x: 230, y: 455, text: "10.10.10.11/24", box: false}
+    - {x: 870, y: 225, text: "10.10.10.12/24", box: false}
+    - {x: 860, y: 695, text: "10.10.10.13/24", box: false}
+    - {x: 170, y: 805, text: "Images : vIOS L2 (switchs), VPCS (PC) · labs.masterytechcenter.com", mono: false, box: false, color: "#4A5566"}
