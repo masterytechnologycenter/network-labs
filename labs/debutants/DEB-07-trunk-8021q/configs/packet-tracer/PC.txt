@@ -1,0 +1,8 @@
+Réglages des PC : Desktop → IP Configuration
+
+COMPTA-1 IP 192.168.10.11  masque 255.255.255.0  passerelle —
+RH-1     IP 192.168.20.11  masque 255.255.255.0  passerelle —
+INVITE-1 IP 192.168.30.11  masque 255.255.255.0  passerelle —
+COMPTA-2 IP 192.168.10.12  masque 255.255.255.0  passerelle —
+RH-2     IP 192.168.20.12  masque 255.255.255.0  passerelle —
+INVITE-2 IP 192.168.30.12  masque 255.255.255.0  passerelle —

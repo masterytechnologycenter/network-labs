@@ -1,0 +1,14 @@
+! SEC-01 · ISP-R · Internet simulé
+hostname ISP-R
+!
+interface Ethernet0/0
+ description vers PA-FW ethernet1/1
+ ip address 203.0.113.1 255.255.255.0
+ no shutdown
+!
+interface Ethernet0/1
+ description vers CLIENT
+ ip address 198.51.100.1 255.255.255.0
+ no shutdown
+!
+end

@@ -1,0 +1,15 @@
+hostname CLIENT
+!
+no ip domain lookup
+no ip routing
+ip default-gateway 192.0.2.1
+!
+interface Ethernet0/0
+ description vers ISP-R
+ ip address 192.0.2.10 255.255.255.0
+ no shutdown
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+end

@@ -1,0 +1,45 @@
+! ACC-2 · 2960-24TT · à coller tel quel dans l'onglet CLI
+no
+enable
+configure terminal
+hostname ACC-2
+no ip domain-lookup
+!
+vlan 10
+ name COMPTA
+vlan 20
+ name RH
+vlan 30
+ name INVITES
+vlan 99
+ name NATIF
+!
+! Gi0/1 ici = Gi0/0 du lab PnetLab (lien vers l'autre switch)
+interface GigabitEthernet0/1
+ description LIEN-VERS-ACC-1
+ switchport mode access
+!
+interface FastEthernet0/1
+ description COMPTA
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+!
+interface FastEthernet0/2
+ description RH
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+!
+interface FastEthernet0/3
+ description INVITES
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+!
+line con 0
+ logging synchronous
+!
+end
+write memory
+

@@ -1,0 +1,21 @@
+hostname ISP-R
+!
+no ip domain lookup
+!
+interface Ethernet0/0
+ description vers CLIENT
+ ip address 192.0.2.1 255.255.255.0
+ no shutdown
+!
+interface Ethernet0/1
+ description vers PA-FW eth1/1
+ ip address 198.51.100.1 255.255.255.252
+ no shutdown
+!
+! Le fournisseur route le bloc public du client vers le pare-feu
+ip route 203.0.113.0 255.255.255.0 198.51.100.2
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+end

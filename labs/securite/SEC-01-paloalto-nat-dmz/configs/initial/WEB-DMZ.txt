@@ -1,0 +1,12 @@
+! SEC-01 · WEB-DMZ · serveur web publié (serveur HTTP IOS)
+hostname WEB-DMZ
+no ip domain-lookup
+!
+interface Ethernet0/0
+ ip address 192.168.50.10 255.255.255.0
+ no shutdown
+!
+ip route 0.0.0.0 0.0.0.0 192.168.50.1
+ip http server
+!
+end

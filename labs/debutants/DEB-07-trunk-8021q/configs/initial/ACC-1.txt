@@ -1,0 +1,39 @@
+hostname ACC-1
+no ip domain-lookup
+vtp mode transparent
+!
+vlan 10
+ name COMPTA
+vlan 20
+ name RH
+vlan 30
+ name INVITES
+vlan 99
+ name NATIF
+!
+interface GigabitEthernet0/0
+ description LIEN-VERS-ACC-2
+ switchport mode access
+!
+interface GigabitEthernet0/1
+ description COMPTA
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast edge
+!
+interface GigabitEthernet0/2
+ description RH
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast edge
+!
+interface GigabitEthernet0/3
+ description INVITES
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast edge
+!
+line con 0
+ logging synchronous
+!
+end

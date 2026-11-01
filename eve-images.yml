@@ -17,7 +17,7 @@ vpcs:
 vios-l2:
   type: qemu
   template: viosl2
-  image: "viosl2-adventerprisek9-m.cml.SSA.high_iron_20180510"
+  image: "viosl2-adventerprisek9-m.ssa.high_iron_20200929"
   cpu: 1
   ram: 1024
   ethernet: 8
