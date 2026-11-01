@@ -1,0 +1,33 @@
+# SEC-01 · PA-FW · PAN-OS 10.2 · configuration initiale (contient la panne)
+# À coller en mode configuration :  configure  puis les lignes ci-dessous, puis  commit
+# Si la configuration d'usine contient un virtual-wire par défaut, supprime-le d'abord :
+#   delete network virtual-wire default-vwire
+#   delete rulebase security rules rule1
+#   delete zone trust
+#   delete zone untrust
+
+set network profiles interface-management-profile PING ping yes
+set network interface ethernet ethernet1/1 layer3 ip 203.0.113.2/24
+set network interface ethernet ethernet1/1 layer3 interface-management-profile PING
+set network interface ethernet ethernet1/2 layer3 ip 192.168.50.1/24
+set network interface ethernet ethernet1/3 layer3 ip 10.10.10.1/24
+set network interface ethernet ethernet1/3 layer3 interface-management-profile PING
+
+set zone untrust network layer3 ethernet1/1
+set zone dmz network layer3 ethernet1/2
+set zone trust network layer3 ethernet1/3
+
+set network virtual-router default interface [ ethernet1/1 ethernet1/2 ethernet1/3 ]
+set network virtual-router default routing-table ip static-route DEFAUT destination 0.0.0.0/0 nexthop ip-address 203.0.113.1
+
+set address WEB-PRIVE ip-netmask 192.168.50.10/32
+set address WEB-PUBLIC ip-netmask 203.0.113.10/32
+
+# Publication du serveur web : NAT de destination (correct)
+set rulebase nat rules DNAT-WEB from untrust to untrust source any destination WEB-PUBLIC service service-http destination-translation translated-address WEB-PRIVE
+# Accès Internet du LAN
+set rulebase nat rules SNAT-LAN from trust to untrust source any destination any service any source-translation dynamic-ip-and-port interface-address interface ethernet1/1
+
+# Règle de sécurité : LA PANNE est ici (destination = IP privée, après NAT)
+set rulebase security rules DMZ-WEB from untrust to dmz source any destination WEB-PRIVE application any service service-http action allow
+set rulebase security rules LAN-INTERNET from trust to untrust source any destination any application any service application-default action allow

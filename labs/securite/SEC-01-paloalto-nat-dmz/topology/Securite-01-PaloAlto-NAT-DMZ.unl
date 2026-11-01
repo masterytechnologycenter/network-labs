@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<lab name="Securite-01-PaloAlto-NAT-DMZ" id="aa6eefea-6b34-50d3-8ccb-dd001e7ef2af" version="1" scripttimeout="300" lock="0" author="Hilaire TCHOUATEU">
+  <description>SEC-01 · Palo Alto : la DMZ injoignable après un NAT</description>
+  <topology>
+    <nodes>
+      <node id="1" name="CLIENT" type="iol" template="iol" image="i86bi-linux-l3-adventerprisek9-15.4.2T.bin" ethernet="1" serial="0" nvram="1024" ram="1024" console="telnet" delay="0" icon="PC-2D-Laptop-Generic-S.svg" config="1" left="250" top="160">
+        <interface id="0" name="e0/0" type="ethernet" network_id="1"/>
+      </node>
+      <node id="2" name="ISP-R" type="iol" template="iol" image="i86bi-linux-l3-adventerprisek9-15.4.2T.bin" ethernet="1" serial="0" nvram="1024" ram="1024" console="telnet" delay="0" icon="Router-3D-Gen1-S.svg" config="1" left="600" top="160">
+        <interface id="0" name="e0/0" type="ethernet" network_id="2"/>
+        <interface id="16" name="e0/1" type="ethernet" network_id="1"/>
+      </node>
+      <node id="3" name="PA-FW" type="qemu" template="paloalto" image="paloalto-10.2.9" uuid="6bfe2287-cfad-5ba8-9b5c-a80bab7949c8" cpu="2" ram="6144" ethernet="7" console="telnet" delay="0" icon="Firewall-2D-PA-S.svg" config="0" left="600" top="380">
+        <interface id="1" name="eth1/1" type="ethernet" network_id="2"/>
+        <interface id="2" name="eth1/2" type="ethernet" network_id="3"/>
+        <interface id="3" name="eth1/3" type="ethernet" network_id="4"/>
+      </node>
+      <node id="4" name="WEB-DMZ" type="iol" template="iol" image="i86bi-linux-l3-adventerprisek9-15.4.2T.bin" ethernet="1" serial="0" nvram="1024" ram="1024" console="telnet" delay="0" icon="Server-2D-WEB-S.svg" config="1" left="850" top="600">
+        <interface id="0" name="e0/0" type="ethernet" network_id="3"/>
+      </node>
+      <node id="5" name="PC-ADMIN" type="vpcs" template="vpcs" image="" ethernet="1" console="telnet" delay="0" icon="PC-2D-Desktop-Generic-S.svg" config="1" left="350" top="600">
+        <interface id="0" name="eth0" type="ethernet" network_id="4"/>
+      </node>
+    </nodes>
+    <networks>
+      <network id="1" type="bridge" name="Net-CLIENT-ISP-R" left="425" top="160" visibility="0"/>
+      <network id="2" type="bridge" name="Net-ISP-R-PA-FW" left="600" top="270" visibility="0"/>
+      <network id="3" type="bridge" name="Net-PA-FW-WEB-DMZ" left="725" top="490" visibility="0"/>
+      <network id="4" type="bridge" name="Net-PA-FW-PC-ADMIN" left="475" top="490" visibility="0"/>
+    </networks>
+  </topology>
+  <objects>
+    <textobjects>
+      <textobject id="1" name="UNTRUST · INTERNET" type="square">
+        <data>PGRpdiBpZD0iY3VzdG9tU2hhcGUxIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tU2hhcGUxIGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjEiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMTUwcHg7IHRvcDogOTBweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxOyI+PHN2ZyB3aWR0aD0iODIwIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjgyMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM3Qzg3OTYiIGZpbGwtb3BhY2l0eT0iMC4xMiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2U9IiM3Qzg3OTYiIHN0cm9rZS1kYXNoYXJyYXk9IjEwLDYiPjwvcmVjdD48L3N2Zz48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="2" name="UNTRUST · INTERNET (titre)" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDIiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjIiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMTYwcHg7IHRvcDogOThweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAxOyBjb2xvcjogIzdDODc5NjsgZm9udC1mYW1pbHk6IEFyaWFsLCBzYW5zLXNlcmlmOyBmb250LXNpemU6IDE1cHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB3aGl0ZS1zcGFjZTogbm93cmFwOyI+PHAgc3R5bGU9Im1hcmdpbjogMDsiPlVOVFJVU1QgwrcgSU5URVJORVQ8L3A+PC9kaXY+</data>
+      </textobject>
+      <textobject id="3" name="TRUST · 10.10.10.0/24" type="square">
+        <data>PGRpdiBpZD0iY3VzdG9tU2hhcGUzIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tU2hhcGUzIGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjMiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMjAwcHg7IHRvcDogNTIwcHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTsiPjxzdmcgd2lkdGg9IjMzMCIgaGVpZ2h0PSIyMDAiPjxyZWN0IHdpZHRoPSIzMzAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMEIzN0Q0IiBmaWxsLW9wYWNpdHk9IjAuMSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2U9IiMwQjM3RDQiIHN0cm9rZS1kYXNoYXJyYXk9IjEwLDYiPjwvcmVjdD48L3N2Zz48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="4" name="TRUST · 10.10.10.0/24 (titre)" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDQiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjQiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMjEwcHg7IHRvcDogNTI4cHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTAwMTsgY29sb3I6ICMwQjM3RDQ7IGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxNXB4OyBmb250LXdlaWdodDogYm9sZDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij5UUlVTVCDCtyAxMC4xMC4xMC4wLzI0PC9wPjwvZGl2Pg==</data>
+      </textobject>
+      <textobject id="5" name="DMZ · 192.168.50.0/24" type="square">
+        <data>PGRpdiBpZD0iY3VzdG9tU2hhcGU1IiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tU2hhcGU1IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjUiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogNzAwcHg7IHRvcDogNTIwcHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTsiPjxzdmcgd2lkdGg9IjMzMCIgaGVpZ2h0PSIyMDAiPjxyZWN0IHdpZHRoPSIzMzAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRTUzODNCIiBmaWxsLW9wYWNpdHk9IjAuMDgiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlPSIjRTUzODNCIiBzdHJva2UtZGFzaGFycmF5PSIxMCw2Ij48L3JlY3Q+PC9zdmc+PC9kaXY+</data>
+      </textobject>
+      <textobject id="6" name="DMZ · 192.168.50.0/24 (titre)" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDYiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjYiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogNzEwcHg7IHRvcDogNTI4cHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTAwMTsgY29sb3I6ICNFNTM4M0I7IGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxNXB4OyBmb250LXdlaWdodDogYm9sZDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij5ETVogwrcgMTkyLjE2OC41MC4wLzI0PC9wPjwvZGl2Pg==</data>
+      </textobject>
+      <textobject id="7" name="SEC-01 · Palo Alto : DMZ et NA" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDciIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjciIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMTUwcHg7IHRvcDogMzBweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzA1MDgwRDsgIGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxOHB4OyBmb250LXdlaWdodDogYm9sZDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij5TRUMtMDEgwrcgUGFsbyBBbHRvIDogRE1aIGV0IE5BVCDCtyBNYXN0ZXJ5IFRlY2ggQ2VudGVyPC9wPjwvZGl2Pg==</data>
+      </textobject>
+      <textobject id="8" name="198.51.100.20/24" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDgiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjgiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogMjUwcHg7IHRvcDogMjM1cHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTAwMjsgY29sb3I6ICMxRTI1MzM7ICBmb250LWZhbWlseTogJ0RlamFWdSBTYW5zIE1vbm8nLCBDb25zb2xhcywgbW9ub3NwYWNlOyBmb250LXNpemU6IDEycHg7IGZvbnQtd2VpZ2h0OiBub3JtYWw7IHdoaXRlLXNwYWNlOiBub3dyYXA7Ij48cCBzdHlsZT0ibWFyZ2luOiAwOyI+MTk4LjUxLjEwMC4yMC8yNDwvcD48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="9" name="eth1/1 203.0.113.2/24 (untrust" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDkiIGNsYXNzPSJjdXN0b21TaGFwZSBjdXN0b21UZXh0IGNvbnRleHQtbWVudSBqdGstZHJhZ2dhYmxlIiBkYXRhLXBhdGg9IjkiIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmU7IHBvc2l0aW9uOiBhYnNvbHV0ZTsgbGVmdDogNzAwcHg7IHRvcDogMzMwcHg7IGN1cnNvcjogbW92ZTsgei1pbmRleDogMTAwMjsgY29sb3I6ICMxRTI1MzM7IGJhY2tncm91bmQtY29sb3I6ICNmZmZmZmY7IGJvcmRlcjogMXB4IHNvbGlkICNFNTM4M0I7IGJvcmRlci1yYWRpdXM6IDZweDsgcGFkZGluZzogNHB4IDhweDsgZm9udC1mYW1pbHk6ICdEZWphVnUgU2FucyBNb25vJywgQ29uc29sYXMsIG1vbm9zcGFjZTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogbm9ybWFsOyB3aGl0ZS1zcGFjZTogbm93cmFwOyI+PHAgc3R5bGU9Im1hcmdpbjogMDsiPmV0aDEvMSAyMDMuMC4xMTMuMi8yNCAodW50cnVzdCk8YnI+ZXRoMS8yIDE5Mi4xNjguNTAuMS8yNCAoZG16KTxicj5ldGgxLzMgMTAuMTAuMTAuMS8yNCAodHJ1c3QpPGJyPlZJUCB3ZWIgMjAzLjAuMTEzLjEwIOKGkiAxOTIuMTY4LjUwLjEwPC9wPjwvZGl2Pg==</data>
+      </textobject>
+      <textobject id="10" name="192.168.50.10 (HTTP)" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDEwIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tVGV4dCBjb250ZXh0LW1lbnUganRrLWRyYWdnYWJsZSIgZGF0YS1wYXRoPSIxMCIgc3R5bGU9ImRpc3BsYXk6IGlubGluZTsgcG9zaXRpb246IGFic29sdXRlOyBsZWZ0OiA4MDBweDsgdG9wOiA2NzBweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzFFMjUzMzsgIGZvbnQtZmFtaWx5OiAnRGVqYVZ1IFNhbnMgTW9ubycsIENvbnNvbGFzLCBtb25vc3BhY2U7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IG5vcm1hbDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij4xOTIuMTY4LjUwLjEwIChIVFRQKTwvcD48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="11" name="10.10.10.10/24" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDExIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tVGV4dCBjb250ZXh0LW1lbnUganRrLWRyYWdnYWJsZSIgZGF0YS1wYXRoPSIxMSIgc3R5bGU9ImRpc3BsYXk6IGlubGluZTsgcG9zaXRpb246IGFic29sdXRlOyBsZWZ0OiAzMDBweDsgdG9wOiA2NzBweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzFFMjUzMzsgIGZvbnQtZmFtaWx5OiAnRGVqYVZ1IFNhbnMgTW9ubycsIENvbnNvbGFzLCBtb25vc3BhY2U7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IG5vcm1hbDsgd2hpdGUtc3BhY2U6IG5vd3JhcDsiPjxwIHN0eWxlPSJtYXJnaW46IDA7Ij4xMC4xMC4xMC4xMC8yNDwvcD48L2Rpdj4=</data>
+      </textobject>
+      <textobject id="12" name="Images : PAN-OS 10.2.9, IOL L3" type="text">
+        <data>PGRpdiBpZD0iY3VzdG9tVGV4dDEyIiBjbGFzcz0iY3VzdG9tU2hhcGUgY3VzdG9tVGV4dCBjb250ZXh0LW1lbnUganRrLWRyYWdnYWJsZSIgZGF0YS1wYXRoPSIxMiIgc3R5bGU9ImRpc3BsYXk6IGlubGluZTsgcG9zaXRpb246IGFic29sdXRlOyBsZWZ0OiAxNTBweDsgdG9wOiA3NDBweDsgY3Vyc29yOiBtb3ZlOyB6LWluZGV4OiAxMDAyOyBjb2xvcjogIzRBNTU2NjsgIGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogbm9ybWFsOyB3aGl0ZS1zcGFjZTogbm93cmFwOyI+PHAgc3R5bGU9Im1hcmdpbjogMDsiPkltYWdlcyA6IFBBTi1PUyAxMC4yLjksIElPTCBMMywgVlBDUyDCtyBjb25maWcgZHUgcGFyZS1mZXUgw6AgY29sbGVyIDogY29uZmlncy9pbml0aWFsL1BBLUZXLnNldC50eHQgwrcgbGFicy5tYXN0ZXJ5dGVjaGNlbnRlci5jb208L3A+PC9kaXY+</data>
+      </textobject>
+    </textobjects>
+    <configs>
+      <config id="1">ISBTRUMtMDEgwrcgQ0xJRU5UIMK3IGludGVybmF1dGUKaG9zdG5hbWUgQ0xJRU5UCm5vIGlwIGRvbWFpbi1sb29rdXAKIQppbnRlcmZhY2UgRXRoZXJuZXQwLzAKIGlwIGFkZHJlc3MgMTk4LjUxLjEwMC4yMCAyNTUuMjU1LjI1NS4wCiBubyBzaHV0ZG93bgohCmlwIHJvdXRlIDAuMC4wLjAgMC4wLjAuMCAxOTguNTEuMTAwLjEKIQplbmQK</config>
+      <config id="2">ISBTRUMtMDEgwrcgSVNQLVIgwrcgSW50ZXJuZXQgc2ltdWzDqQpob3N0bmFtZSBJU1AtUgohCmludGVyZmFjZSBFdGhlcm5ldDAvMAogZGVzY3JpcHRpb24gdmVycyBQQS1GVyBldGhlcm5ldDEvMQogaXAgYWRkcmVzcyAyMDMuMC4xMTMuMSAyNTUuMjU1LjI1NS4wCiBubyBzaHV0ZG93bgohCmludGVyZmFjZSBFdGhlcm5ldDAvMQogZGVzY3JpcHRpb24gdmVycyBDTElFTlQKIGlwIGFkZHJlc3MgMTk4LjUxLjEwMC4xIDI1NS4yNTUuMjU1LjAKIG5vIHNodXRkb3duCiEKZW5kCg==</config>
+      <config id="4">ISBTRUMtMDEgwrcgV0VCLURNWiDCtyBzZXJ2ZXVyIHdlYiBwdWJsacOpIChzZXJ2ZXVyIEhUVFAgSU9TKQpob3N0bmFtZSBXRUItRE1aCm5vIGlwIGRvbWFpbi1sb29rdXAKIQppbnRlcmZhY2UgRXRoZXJuZXQwLzAKIGlwIGFkZHJlc3MgMTkyLjE2OC41MC4xMCAyNTUuMjU1LjI1NS4wCiBubyBzaHV0ZG93bgohCmlwIHJvdXRlIDAuMC4wLjAgMC4wLjAuMCAxOTIuMTY4LjUwLjEKaXAgaHR0cCBzZXJ2ZXIKIQplbmQK</config>
+      <config id="5">c2V0IHBjbmFtZSBQQy1BRE1JTgppcCAxMC4xMC4xMC4xMC8yNCAxMC4xMC4xMC4xCnNhdmUK</config>
+    </configs>
+  </objects>
+</lab>

@@ -1,0 +1,11 @@
+! SEC-01 · CLIENT · internaute
+hostname CLIENT
+no ip domain-lookup
+!
+interface Ethernet0/0
+ ip address 198.51.100.20 255.255.255.0
+ no shutdown
+!
+ip route 0.0.0.0 0.0.0.0 198.51.100.1
+!
+end

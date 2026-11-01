@@ -1,0 +1,42 @@
+lab:
+  id: SEC-01
+  title: "Palo Alto : la DMZ injoignable après un NAT"
+  parcours: securite
+  niveau: "Intermédiaire (PCNSA / PCNSE)"
+  plateforme: [PnetLab, EVE-NG]
+  author: "Hilaire TCHOUATEU"
+  video: ""
+  zip: "https://github.com/masterytechnologycenter/network-labs/releases/download/SEC-01/SEC-01-paloalto-nat-dmz.zip"
+
+nodes:
+  - {name: CLIENT, image: "IOL L3", interfaces: {Ethernet0/0: 198.51.100.20/24}}
+  - {name: ISP-R, image: "IOL L3", interfaces: {Ethernet0/0: 203.0.113.1/24, Ethernet0/1: 198.51.100.1/24}}
+  - {name: PA-FW, image: "PAN-OS 10.2.9", interfaces: {ethernet1/1: "203.0.113.2/24 (untrust)", ethernet1/2: "192.168.50.1/24 (dmz)", ethernet1/3: "10.10.10.1/24 (trust)"}, config: "configs/initial/PA-FW.set.txt (à coller)"}
+  - {name: WEB-DMZ, image: "IOL L3", interfaces: {Ethernet0/0: 192.168.50.10/24}}
+  - {name: PC-ADMIN, image: VPCS, ip: 10.10.10.10/24, gateway: 10.10.10.1}
+
+# Génération du .unl : python scripts/make_unl.py labs/securite/SEC-01-paloalto-nat-dmz
+eve:
+  name: Securite-01-PaloAlto-NAT-DMZ
+  nodes:
+    CLIENT:   {template: iol-l3,   icon: PC-2D-Laptop-Generic-S.svg,  position: [250, 160]}
+    ISP-R:    {template: iol-l3,   icon: Router-3D-Gen1-S.svg,        position: [600, 160]}
+    PA-FW:    {template: paloalto, icon: Firewall-2D-PA-S.svg,        position: [600, 380]}
+    WEB-DMZ:  {template: iol-l3,   icon: Server-2D-WEB-S.svg,         position: [850, 600]}
+    PC-ADMIN: {template: vpcs,     icon: PC-2D-Desktop-Generic-S.svg, position: [350, 600]}
+  links:
+    - [CLIENT, e0/0, ISP-R, e0/1]
+    - [ISP-R, e0/0, PA-FW, eth1/1]
+    - [PA-FW, eth1/2, WEB-DMZ, e0/0]
+    - [PA-FW, eth1/3, PC-ADMIN, eth0]
+  zones:
+    - {label: "UNTRUST · INTERNET", x: 150, y: 90, w: 820, h: 200, color: "#7C8796", opacity: 0.12}
+    - {label: "TRUST · 10.10.10.0/24", x: 200, y: 520, w: 330, h: 200, color: "#0B37D4"}
+    - {label: "DMZ · 192.168.50.0/24", x: 700, y: 520, w: 330, h: 200, color: "#E5383B", opacity: 0.08}
+  texts:
+    - {x: 150, y: 30, text: "SEC-01 · Palo Alto : DMZ et NAT · Mastery Tech Center", mono: false, bold: true, size: 18, box: false, color: "#05080D"}
+    - {x: 250, y: 235, text: "198.51.100.20/24", box: false}
+    - {x: 700, y: 330, text: "eth1/1 203.0.113.2/24 (untrust)\neth1/2 192.168.50.1/24 (dmz)\neth1/3 10.10.10.1/24 (trust)\nVIP web 203.0.113.10 → 192.168.50.10", border: "#E5383B"}
+    - {x: 800, y: 670, text: "192.168.50.10 (HTTP)", box: false}
+    - {x: 300, y: 670, text: "10.10.10.10/24", box: false}
+    - {x: 150, y: 740, text: "Images : PAN-OS 10.2.9, IOL L3, VPCS · config du pare-feu à coller : configs/initial/PA-FW.set.txt · labs.masterytechcenter.com", mono: false, box: false, color: "#4A5566"}

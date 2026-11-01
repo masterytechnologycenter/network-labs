@@ -1,0 +1,24 @@
+hostname CORE1
+!
+no ip domain lookup
+!
+interface Ethernet0/0
+ description vers PA-FW eth1/3 (TRUST)
+ ip address 10.10.0.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet0/1
+ description reseau de sauvegarde vers WEB-DMZ
+ ip address 10.60.0.1 255.255.255.0
+ no shutdown
+!
+! Depot de sauvegarde simule
+interface Loopback70
+ ip address 10.70.0.1 255.255.255.0
+!
+ip route 0.0.0.0 0.0.0.0 10.10.0.1
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+end

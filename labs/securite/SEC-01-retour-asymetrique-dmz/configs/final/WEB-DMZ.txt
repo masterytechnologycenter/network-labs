@@ -1,0 +1,25 @@
+hostname WEB-DMZ
+!
+no ip domain lookup
+!
+interface Ethernet0/0
+ description DMZ vers PA-FW eth1/2
+ ip address 10.50.0.10 255.255.255.0
+ no shutdown
+!
+interface Ethernet0/1
+ description carte de sauvegarde vers CORE1
+ ip address 10.60.0.10 255.255.255.0
+ no shutdown
+!
+! CORRIGE : route par defaut vers le pare-feu, route dediee pour la sauvegarde
+ip route 0.0.0.0 0.0.0.0 10.50.0.1
+ip route 10.70.0.0 255.255.255.0 10.60.0.1
+!
+ip http server
+ip http secure-server
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+end

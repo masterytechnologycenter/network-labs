@@ -1,0 +1,43 @@
+lab:
+  id: SEC-01
+  title: "DMZ : le site web coupé par une carte de sauvegarde (routage asymétrique)"
+  parcours: securite
+  niveau: intermédiaire
+  objectifs_ccna_v2: ["3.1", "3.2"]
+  author: "Hilaire TCHOUATEU"
+  versions: "PAN-OS 10.2.9 · IOL L3 15.4"
+  zip: "https://github.com/masterytechnologycenter/network-labs/releases/tag/SEC-01"
+
+nodes:
+  CLIENT:  {role: "poste Internet (IOL en rôle d'hôte)", interfaces: {e0/0: "192.0.2.10/24"}}
+  ISP-R:   {role: "routeur du fournisseur d'accès", interfaces: {e0/0: "192.0.2.1/24", e0/1: "198.51.100.1/30"}}
+  PA-FW:   {role: "pare-feu Palo Alto", interfaces: {eth1/1: "198.51.100.2/30 (untrust)", eth1/2: "10.50.0.1/24 (dmz)", eth1/3: "10.10.0.1/24 (trust)"}}
+  CORE1:   {role: "cœur de réseau interne", interfaces: {e0/0: "10.10.0.2/24", e0/1: "10.60.0.1/24 (sauvegarde)", Lo70: "10.70.0.1/24 (dépôt de sauvegarde)"}}
+  WEB-DMZ: {role: "serveur web (IOL en rôle de serveur)", interfaces: {e0/0: "10.50.0.10/24 (dmz)", e0/1: "10.60.0.10/24 (sauvegarde)"}}
+
+eve:
+  name: "Securite-01-PaloAlto-Retour-Asymetrique"
+  nodes:
+    CLIENT:  {template: iol-l3,   icon: "PC-2D-Laptop-Generic-S.svg", position: [110, 70]}
+    ISP-R:   {template: iol-l3,   icon: "Router-3D-Gen1-S.svg",       position: [470, 70]}
+    PA-FW:   {template: paloalto, icon: "Firewall-2D-PA-S.svg",       position: [470, 250]}
+    CORE1:   {template: iol-l3,   icon: "Switch-3D-L3-S.svg",         position: [190, 440]}
+    WEB-DMZ: {template: iol-l3,   icon: "Server-2D-WEB-S.svg",        position: [700, 440]}
+  links:
+    - [CLIENT,  e0/0,   ISP-R,   e0/0]
+    - [ISP-R,   e0/1,   PA-FW,   eth1/1]
+    - [PA-FW,   eth1/2, WEB-DMZ, e0/0]
+    - [PA-FW,   eth1/3, CORE1,   e0/0]
+    - [CORE1,   e0/1,   WEB-DMZ, e0/1]
+  zones:
+    - {label: "UNTRUST · INTERNET", x: 50,  y: 20,  w: 640, h: 170, color: "#7C8796"}
+    - {label: "TRUST",              x: 70,  y: 370, w: 260, h: 170, color: "#0B37D4"}
+    - {label: "DMZ",                x: 580, y: 370, w: 290, h: 170, color: "#E5383B"}
+  texts:
+    - {name: "Titre", x: 40, y: 565, text: "SEC-01 · Palo Alto · DMZ : le site coupé par une carte de sauvegarde", bold: true, size: 15, mono: false, box: false}
+    - {name: "CLIENT", x: 90,  y: 140, text: "CLIENT\ne0/0 192.0.2.10/24\ngw 192.0.2.1", size: 11}
+    - {name: "ISP-R",  x: 560, y: 60,  text: "ISP-R\ne0/0 192.0.2.1/24\ne0/1 198.51.100.1/30\nroute 203.0.113.0/24 > PA-FW", size: 11}
+    - {name: "PA-FW",  x: 570, y: 240, text: "PA-FW · PAN-OS 10.2.9\neth1/1 198.51.100.2/30 untrust\neth1/2 10.50.0.1/24 dmz\neth1/3 10.10.0.1/24 trust\nDNAT 203.0.113.10 > 10.50.0.10", size: 11}
+    - {name: "CORE1",  x: 90,  y: 500, text: "CORE1\ne0/0 10.10.0.2/24\ne0/1 10.60.0.1/24\nLo70 10.70.0.1/24", size: 11}
+    - {name: "WEB-DMZ", x: 640, y: 500, text: "WEB-DMZ\ne0/0 10.50.0.10/24 (dmz)\ne0/1 10.60.0.10/24 (sauvegarde)", size: 11}
+    - {name: "Legende", x: 330, y: 400, text: "Lien physique\nImages : PAN-OS 10.2.9, IOL L3 15.4", size: 11, box: false}
