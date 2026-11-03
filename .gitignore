@@ -20,3 +20,6 @@ site/
 
 # Archives de release (jointes sur GitHub, jamais commitées)
 *.zip
+
+# Labs complets en HTML : documents de travail de l'auteur, jamais publiés (on publie le PDF)
+labs/**/docs/*.html
