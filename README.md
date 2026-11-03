@@ -15,6 +15,8 @@ Les images d'équipements ne sont pas fournies.
 ## Sécurité réseau
 | ID | Lab | Niveau | Vidéo | Zip |
 |----|-----|--------|-------|-----|
+| SEC-01 | [Palo Alto : la DMZ injoignable après un NAT](labs/securite/SEC-01-paloalto-nat-dmz/README.md) | Intermédiaire | à venir | à venir |
+| SEC-01 | [DMZ : le site web coupé par une carte de sauvegarde](labs/securite/SEC-01-retour-asymetrique-dmz/README.md) | Intermédiaire | à venir | à venir |
 
 ## Routage et WAN
 | ID | Lab | Niveau | Vidéo | Zip |
@@ -35,6 +37,13 @@ Les images d'équipements ne sont pas fournies.
 ## Cas pratiques
 | ID | Lab | Niveau | Vidéo | Zip |
 |----|-----|--------|-------|-----|
+| CAS-01 | [Segmentation sécurisée avec OSPF multi-area et Palo Alto](labs/cas-pratiques/CAS-01-ospf-segmentation-paloalto/README.md) | Avancé | à venir | [PDF](labs/cas-pratiques/CAS-01-ospf-segmentation-paloalto/docs/CAS-01_Lab-complet.pdf) |
+
+## Débutants
+| ID | Lab | Niveau | Vidéo | Zip |
+|----|-----|--------|-------|-----|
+| DEB-07 | [Trunk 802.1Q : plusieurs VLAN, un seul câble](labs/debutants/DEB-07-trunk-8021q/README.md) | Débutant | à venir | à venir |
+
 ## Incidents en entreprise
 
 | ID | Lab | Niveau | Vidéo | Zip |

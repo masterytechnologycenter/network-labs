@@ -13,5 +13,7 @@ Les images d'équipements ne sont pas fournies.
 | [CLD · Cloud hybride](cloud-hybride/index.md) | Azure, BGP, NVA |
 | [AUT · Automatisation](automatisation/index.md) | Python, Ansible, NETCONF |
 | [CAS · Cas pratiques](cas-pratiques/index.md) | Scénarios multi-domaines |
+| [INC · Incidents en entreprise](incidents/index.md) | Pannes réelles de production, avec la vidéo |
+| [DEB · Débutants](debutants/index.md) | Un concept CCNA par lab, en quelques minutes |
 
 Niveaux : Fondamental · Intermédiaire · Avancé, indiqués dans chaque lab.
