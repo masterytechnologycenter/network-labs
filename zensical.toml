@@ -1,6 +1,6 @@
 [project]
 docs_dir = "labs"
-site_url = "https://masterytechnologycenter.github.io/network-labs/"
+site_url = "https://labs.masterytechcenter.com/"
 site_name = "Mastery Tech Center · Network Labs"
 site_description = "Labs réseau et sécurité : topologies, configs et LLD"
 site_author = "Hilaire TCHOUATEU"

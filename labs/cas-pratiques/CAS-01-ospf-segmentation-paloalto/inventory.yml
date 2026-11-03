@@ -1,9 +1,76 @@
-# IP de management des nœuds du lab (utilisées par backup_configs.py)
-# device_type : cisco_nxos, cisco_ios, cisco_xr, paloalto_panos, fortinet...
-devices:
-  - name: SPINE1
-    device_type: cisco_nxos
-    host: 192.168.100.11
-  - name: LEAF1
-    device_type: cisco_nxos
-    host: 192.168.100.21
+lab:
+  id: CAS-01
+  title: "Segmentation sécurisée avec OSPF multi-area et Palo Alto"
+  ticket: "Une entreprise, deux sites, un datacenter et un partenaire qui ne doit joindre que l'application web. Sécurise le routage (ce qui est annoncé) et le pare-feu (ce qui est autorisé)."
+  parcours: cas-pratiques
+  niveau: Avancé
+  ccna_v2: []
+  plateforme: [PnetLab, EVE-NG]
+  author: "Hilaire TCHOUATEU"
+  source: "Matrice de câblage et plan d'adressage du PDF CAS-01_Lab-complet.pdf (network-labs), pages 4 à 6"
+  note: "Inventaire de SCHÉMA (topology.png). Les configurations du lab sont dans le PDF ; elles ne sont pas encore extraites ici."
+
+# Adresses affichées sous les nœuds : Router ID (10.255.0.x) et hôtes
+nodes:
+  - {name: MGMT-PC, ip: "10.99.99.10"}
+  - {name: TEST-R, ip: "10.10.10.66"}
+  - {name: PC-A-USER, ip: "10.10.10.10"}
+  - {name: IOT-CAM, ip: "10.10.12.10"}
+  - {name: PC-B-USER, ip: "10.20.20.10"}
+  - {name: SRV-WEB, ip: "10.30.31.10"}
+  - {name: SRV-DB, ip: "10.30.32.10"}
+
+eve:
+  habillage: mtc
+  name: CAS-01-OSPF-Segmentation-PaloAlto
+  nodes:
+    MGMT-PC:   {template: vpcs,     icon: PC-2D-Desktop-Generic-S.svg, position: [180, 250]}
+    PA-FW:     {template: paloalto, icon: Firewall-2D-PA-S.svg,        position: [560, 250]}
+    DC-SW:     {template: iol-l2,   icon: Switch-2D-L2-Generic-S.svg,  position: [1070, 410]}
+    SRV-WEB:   {template: vpcs,     icon: Server-2D-WEB-S.svg,         position: [960, 120]}
+    SRV-DB:    {template: vpcs,     icon: Server-2D-Generic-S.svg,     position: [1180, 120]}
+    CORE1:     {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [400, 480]}
+    CORE2:     {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [720, 480]}
+    PARTNER-R: {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [95, 740]}
+    DIST-A:    {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [430, 740]}
+    DIST-B:    {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [860, 740]}
+    ACC-A:     {template: iol-l2,   icon: Switch-2D-L2-Generic-S.svg,  position: [430, 960]}
+    ACC-B:     {template: iol-l2,   icon: Switch-2D-L2-Generic-S.svg,  position: [860, 960]}
+    TEST-R:    {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [250, 1180]}
+    PC-A-USER: {template: vpcs,     icon: PC-2D-Desktop-Generic-S.svg, position: [430, 1180]}
+    IOT-CAM:   {template: vpcs,     icon: PC-2D-Desktop-Generic-S.svg, position: [610, 1180]}
+    PC-B-USER: {template: vpcs,     icon: PC-2D-Desktop-Generic-S.svg, position: [860, 1180]}
+  # Matrice de câblage du PDF (L1 à L18)
+  links:
+    - [CORE1, e0/0, CORE2, e0/0]
+    - [CORE1, e0/3, PA-FW, eth1/1]
+    - [CORE2, e0/3, PA-FW, eth1/2]
+    - [CORE1, e0/1, DIST-A, e0/0]
+    - [CORE2, e0/1, DIST-A, e0/1]
+    - [CORE1, e0/2, DIST-B, e0/0]
+    - [CORE2, e0/2, DIST-B, e0/1]
+    - [DIST-A, e0/2, ACC-A, e0/0]
+    - [DIST-A, e0/3, PARTNER-R, e0/0]
+    - [DIST-B, e0/2, ACC-B, e0/0]
+    - [PA-FW, eth1/3, DC-SW, e0/0]
+    - [PA-FW, eth1/4, MGMT-PC, eth0]
+    - [ACC-A, e0/1, PC-A-USER, eth0]
+    - [ACC-A, e0/2, IOT-CAM, eth0]
+    - [ACC-A, e0/3, TEST-R, e0/0]
+    - [ACC-B, e0/1, PC-B-USER, eth0]
+    - [DC-SW, e0/1, SRV-WEB, eth0]
+    - [DC-SW, e0/2, SRV-DB, eth0]
+  clouds:
+    # Gestion du Palo Alto (interface web HTTPS) : nuage pnet0, comme dans le PDF du lab
+    - {name: Gestion, type: pnet0, node: PA-FW, iface: mgmt, position: [560, 70]}
+  zones:
+    - {label: "Area 0 · backbone · zones CAMPUS et MGMT", x: 90, y: 160, w: 770, h: 400, color: "#0B37D4", title_color: "#0B2E8A"}
+    - {label: "Area 30 · zones DC-WEB et DC-DB", x: 890, y: 40, w: 400, h: 450, color: "#7B3FD1", title_color: "#5A2A9E"}
+    - {label: "Area 10 · Site A (NSSA)", x: 210, y: 640, w: 480, h: 620, color: "#2E9E3A", title_color: "#1F6E28"}
+    - {label: "Area 20 · Site B (Totally Stubby)", x: 730, y: 640, w: 270, h: 620, color: "#C98A0B", title_color: "#8A5E05"}
+    - {label: "OSPF 200 · partenaire", x: 10, y: 660, w: 190, h: 170, color: "#D93A3D", title_color: "#A11F22"}
+  texts:
+    - {x: 1040, y: 560, text: "Router ID 10.255.0.x\nCORE1 .1 · CORE2 .2 · DIST-A .11\nDIST-B .12 · PA-FW .100 · TEST-R .66"}
+    - {x: 1040, y: 700, text: "Transits /30\nCORE1–CORE2 10.0.12.0\nCORE–PA 10.0.101.0 · 10.0.102.0\nCORE–DIST-A 10.0.111.0 · 10.0.112.0\nCORE–DIST-B 10.0.121.0 · 10.0.122.0\nDIST-A–PARTNER 10.0.200.0"}
+    - {x: 1040, y: 900, text: "LAN\nSite A 10.10.10.0/24 · IoT 10.10.12.0/24\nSite B 10.20.20.0/24\nDC 10.30.31.0/24 · 10.30.32.0/24\nMGMT 10.99.99.0/24"}
+    - {x: 90, y: 1300, text: "Images : IOL L3 et L2 (Cisco), PA-VM PAN-OS 10.x, VPCS · labs.masterytechcenter.com", mono: false, box: false, color: "#4A5566"}
