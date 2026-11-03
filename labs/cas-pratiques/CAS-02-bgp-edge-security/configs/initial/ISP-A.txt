@@ -1,0 +1,4 @@
+! CAS-02 · ISP-A · configuration de départ (contient la panne)
+hostname ISP-A
+no ip domain-lookup
+end

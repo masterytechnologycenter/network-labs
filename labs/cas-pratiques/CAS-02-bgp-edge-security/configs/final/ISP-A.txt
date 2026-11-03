@@ -1,0 +1,56 @@
+! CAS-02 · ISP-A · configuration corrigée
+hostname ISP-A
+ip bgp-community new-format
+interface Loopback0
+ ip address 100.64.255.1 255.255.255.255
+interface Ethernet0/0
+ description CLIENT AS64496 (EDGE-1)
+ ip address 100.64.1.1 255.255.255.252
+ no shutdown
+interface Ethernet0/1
+ description TRANSIT INET AS64499
+ ip address 100.64.10.1 255.255.255.252
+ no shutdown
+interface Ethernet0/2
+ description PEERING ISP-B AS64498
+ ip address 100.64.30.1 255.255.255.252
+ no shutdown
+!
+! Service RTBH (RFC 7999) : /32 du client + communaute 65535:666 -> next-hop discard
+ip route 192.0.2.1 255.255.255.255 Null0 name RTBH-DISCARD
+ip community-list standard CL-BLACKHOLE permit 65535:666
+ip prefix-list PL-CUST-64496 seq 10 permit 198.51.100.0/24 le 25
+ip prefix-list PL-CUST-64496-RTBH seq 10 permit 198.51.100.0/24 ge 32
+!
+route-map RM-CUST-IN permit 10
+ match ip address prefix-list PL-CUST-64496-RTBH
+ match community CL-BLACKHOLE
+ set ip next-hop 192.0.2.1
+ set community no-export additive
+route-map RM-CUST-IN permit 20
+ match ip address prefix-list PL-CUST-64496
+ set local-preference 200
+route-map RM-CUST-IN deny 100
+route-map RM-PEER-IN permit 10
+ set local-preference 100
+!
+router bgp 64497
+ bgp router-id 100.64.255.1
+ bgp log-neighbor-changes
+ neighbor 100.64.1.2 remote-as 64496
+ neighbor 100.64.1.2 description CLIENT-AS64496
+ neighbor 100.64.1.2 password LAB-ISPA-2026
+ neighbor 100.64.1.2 ttl-security hops 1
+ neighbor 100.64.10.2 remote-as 64499
+ neighbor 100.64.30.2 remote-as 64498
+ address-family ipv4
+  neighbor 100.64.1.2 activate
+  neighbor 100.64.1.2 send-community both
+  neighbor 100.64.1.2 default-originate
+  neighbor 100.64.1.2 route-map RM-CUST-IN in
+  neighbor 100.64.10.2 activate
+  neighbor 100.64.30.2 activate
+  neighbor 100.64.30.2 send-community both
+  neighbor 100.64.30.2 route-map RM-PEER-IN in
+!
+end

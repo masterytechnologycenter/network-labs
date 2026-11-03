@@ -1,0 +1,92 @@
+! CAS-02 · CORE · configuration corrigée
+hostname CORE
+no ip domain-lookup
+! Un RD est obligatoire pour utiliser la VRF dans BGP (address-family ipv4 vrf)
+vrf definition USERS
+ rd 65001:10
+ address-family ipv4
+ exit-address-family
+vrf definition GUEST
+ rd 65001:20
+ address-family ipv4
+ exit-address-family
+vrf definition SERVERS
+ rd 65001:30
+ address-family ipv4
+ exit-address-family
+!
+interface Loopback0
+ ip address 10.255.255.10 255.255.255.255
+! ---- Transit vers le PA (une sous-interface par VRF)
+interface Ethernet0/0
+ description TRUNK vers PA-FW ethernet1/4
+ no ip address
+ no shutdown
+interface Ethernet0/0.110
+ encapsulation dot1Q 110
+ vrf forwarding USERS
+ ip address 10.0.110.2 255.255.255.252
+interface Ethernet0/0.120
+ encapsulation dot1Q 120
+ vrf forwarding GUEST
+ ip address 10.0.120.2 255.255.255.252
+interface Ethernet0/0.130
+ encapsulation dot1Q 130
+ vrf forwarding SERVERS
+ ip address 10.0.130.2 255.255.255.252
+! ---- Passerelles des segments
+interface Ethernet0/1
+ description TRUNK vers ACC-SW
+ no ip address
+ no shutdown
+interface Ethernet0/1.10
+ encapsulation dot1Q 10
+ vrf forwarding USERS
+ ip address 10.1.10.1 255.255.255.0
+interface Ethernet0/1.20
+ encapsulation dot1Q 20
+ vrf forwarding GUEST
+ ip address 10.1.20.1 255.255.255.0
+interface Ethernet0/2
+ description TRUNK vers SRV-SW
+ no ip address
+ no shutdown
+interface Ethernet0/2.30
+ encapsulation dot1Q 30
+ vrf forwarding SERVERS
+ ip address 10.1.30.1 255.255.255.0
+!
+ip prefix-list PL-DEFAULT-ONLY seq 10 permit 0.0.0.0/0
+ip prefix-list PL-USERS-OUT    seq 10 permit 10.1.10.0/24
+ip prefix-list PL-GUEST-OUT    seq 10 permit 10.1.20.0/24
+ip prefix-list PL-SERVERS-OUT  seq 10 permit 10.1.30.0/24
+!
+router bgp 65001
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ address-family ipv4 vrf USERS
+  bgp router-id 10.255.255.11
+  network 10.1.10.0 mask 255.255.255.0
+  neighbor 10.0.110.1 remote-as 65000
+  neighbor 10.0.110.1 activate
+  neighbor 10.0.110.1 prefix-list PL-DEFAULT-ONLY in
+  neighbor 10.0.110.1 prefix-list PL-USERS-OUT out
+ exit-address-family
+ address-family ipv4 vrf GUEST
+  bgp router-id 10.255.255.12
+  network 10.1.20.0 mask 255.255.255.0
+  neighbor 10.0.120.1 remote-as 65000
+  neighbor 10.0.120.1 activate
+  neighbor 10.0.120.1 prefix-list PL-DEFAULT-ONLY in
+  neighbor 10.0.120.1 prefix-list PL-GUEST-OUT out
+ exit-address-family
+ address-family ipv4 vrf SERVERS
+  bgp router-id 10.255.255.13
+  network 10.1.30.0 mask 255.255.255.0
+  neighbor 10.0.130.1 remote-as 65000
+  neighbor 10.0.130.1 activate
+  neighbor 10.0.130.1 prefix-list PL-DEFAULT-ONLY in
+  neighbor 10.0.130.1 prefix-list PL-SERVERS-OUT out
+ exit-address-family
+!
+end

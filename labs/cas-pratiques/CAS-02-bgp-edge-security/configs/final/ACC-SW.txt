@@ -1,0 +1,30 @@
+! CAS-02 · ACC-SW · configuration corrigée
+hostname ACC-SW
+vtp mode transparent
+vlan 10
+ name USERS
+vlan 20
+ name GUEST
+vlan 999
+ name PARKING-NATIVE
+interface Ethernet0/0
+ description TRUNK vers CORE e0/1
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20
+ switchport mode trunk
+ switchport nonegotiate
+interface Ethernet0/1
+ description PC-USER
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+interface Ethernet0/2
+ description PC-GUEST
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+end

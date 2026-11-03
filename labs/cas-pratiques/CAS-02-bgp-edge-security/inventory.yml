@@ -1,0 +1,652 @@
+lab:
+  id: CAS-02
+  title: "BGP multi-homé sécurisé, manipulation de chemins et VRF-lite avec Palo Alto"
+  ticket: "NEXA Industries (AS 64496) est multi-homée sur ISP-A (primaire) et ISP-B (secours). Sécurise les sessions eBGP (RFC 7454, MANRS), maîtrise le trafic sortant et entrant, et fais passer chaque flux inter-segments par le Palo Alto."
+  parcours: cas-pratiques
+  niveau: Avancé
+  ccna_v2: []
+  plateforme: [PnetLab, EVE-NG]
+  author: "Hilaire TCHOUATEU"
+  source: "Lab2_BGP_Edge_Security_PaloAlto.html (Tom3), vérifié le 03/11/2026 ; corrections : 6 AS (et non 7), T10 sans adresses publiques réelles, précision T9"
+  configs_note: "initial = noms seuls (lab à construire) ; final = solution nominale T1 à T9 (sans la démonstration Weight de T4, sans le déclencheur RTBH, sans les tests de T10 ni le bonus de T11). Le Palo Alto se configure par l'interface web : configs/final/PA-FW-GUI.txt."
+
+nodes:
+  - {name: INET-HOST, ip: "203.0.113.10"}
+  - {name: SRV-WEB-DMZ, ip: "198.51.100.10"}
+  - {name: PC-USER, ip: "10.1.10.10"}
+  - {name: PC-GUEST, ip: "10.1.20.10"}
+  - {name: SRV-APP, ip: "10.1.30.10"}
+  - {name: SRV-DB, ip: "10.1.30.20"}
+
+configs:
+  INET:
+    initial: |
+      hostname INET
+      no ip domain-lookup
+    final: |
+      hostname INET
+      interface Loopback1
+       description Contenu Internet simule
+       ip address 203.0.113.129 255.255.255.192
+      interface Ethernet0/0
+       ip address 100.64.10.2 255.255.255.252
+       no shutdown
+      interface Ethernet0/1
+       ip address 100.64.20.2 255.255.255.252
+       no shutdown
+      interface Ethernet0/2
+       ip address 203.0.113.1 255.255.255.128
+       no shutdown
+      ip route 203.0.113.0 255.255.255.0 Null0 254
+      router bgp 64499
+       bgp router-id 203.0.113.129
+       bgp log-neighbor-changes
+       neighbor 100.64.10.1 remote-as 64497
+       neighbor 100.64.20.1 remote-as 64498
+       address-family ipv4
+        network 203.0.113.0 mask 255.255.255.0
+        neighbor 100.64.10.1 activate
+        neighbor 100.64.20.1 activate
+      !
+  ISP-A:
+    initial: |
+      hostname ISP-A
+      no ip domain-lookup
+    final: |
+      hostname ISP-A
+      ip bgp-community new-format
+      interface Loopback0
+       ip address 100.64.255.1 255.255.255.255
+      interface Ethernet0/0
+       description CLIENT AS64496 (EDGE-1)
+       ip address 100.64.1.1 255.255.255.252
+       no shutdown
+      interface Ethernet0/1
+       description TRANSIT INET AS64499
+       ip address 100.64.10.1 255.255.255.252
+       no shutdown
+      interface Ethernet0/2
+       description PEERING ISP-B AS64498
+       ip address 100.64.30.1 255.255.255.252
+       no shutdown
+      !
+      ! Service RTBH (RFC 7999) : /32 du client + communaute 65535:666 -> next-hop discard
+      ip route 192.0.2.1 255.255.255.255 Null0 name RTBH-DISCARD
+      ip community-list standard CL-BLACKHOLE permit 65535:666
+      ip prefix-list PL-CUST-64496 seq 10 permit 198.51.100.0/24 le 25
+      ip prefix-list PL-CUST-64496-RTBH seq 10 permit 198.51.100.0/24 ge 32
+      !
+      route-map RM-CUST-IN permit 10
+       match ip address prefix-list PL-CUST-64496-RTBH
+       match community CL-BLACKHOLE
+       set ip next-hop 192.0.2.1
+       set community no-export additive
+      route-map RM-CUST-IN permit 20
+       match ip address prefix-list PL-CUST-64496
+       set local-preference 200
+      route-map RM-CUST-IN deny 100
+      route-map RM-PEER-IN permit 10
+       set local-preference 100
+      !
+      router bgp 64497
+       bgp router-id 100.64.255.1
+       bgp log-neighbor-changes
+       neighbor 100.64.1.2 remote-as 64496
+       neighbor 100.64.1.2 description CLIENT-AS64496
+       neighbor 100.64.1.2 password LAB-ISPA-2026
+       neighbor 100.64.1.2 ttl-security hops 1
+       neighbor 100.64.10.2 remote-as 64499
+       neighbor 100.64.30.2 remote-as 64498
+       address-family ipv4
+        neighbor 100.64.1.2 activate
+        neighbor 100.64.1.2 send-community both
+        neighbor 100.64.1.2 default-originate
+        neighbor 100.64.1.2 route-map RM-CUST-IN in
+        neighbor 100.64.10.2 activate
+        neighbor 100.64.30.2 activate
+        neighbor 100.64.30.2 send-community both
+        neighbor 100.64.30.2 route-map RM-PEER-IN in
+      !
+  ISP-B:
+    initial: |
+      hostname ISP-B
+      no ip domain-lookup
+    final: |
+      hostname ISP-B
+      ip bgp-community new-format
+      interface Loopback0
+       ip address 100.64.255.2 255.255.255.255
+      interface Ethernet0/0
+       description CLIENT AS64496 (EDGE-2)
+       ip address 100.64.2.1 255.255.255.252
+       no shutdown
+      interface Ethernet0/1
+       description TRANSIT INET AS64499
+       ip address 100.64.20.1 255.255.255.252
+       no shutdown
+      interface Ethernet0/2
+       description PEERING ISP-A AS64497
+       ip address 100.64.30.2 255.255.255.252
+       no shutdown
+      !
+      ! Communautes publiees par ISP-B a ses clients : 64498:70 => local-preference 70 chez ISP-B
+      ip community-list standard CL-LP70 permit 64498:70
+      ip prefix-list PL-CUST-64496 seq 10 permit 198.51.100.0/24 le 25
+      route-map RM-CUST-IN permit 10
+       match ip address prefix-list PL-CUST-64496
+       match community CL-LP70
+       set local-preference 70
+      route-map RM-CUST-IN permit 20
+       match ip address prefix-list PL-CUST-64496
+       set local-preference 200
+      route-map RM-CUST-IN deny 100
+      route-map RM-PEER-IN permit 10
+       set local-preference 100
+      !
+      router bgp 64498
+       bgp router-id 100.64.255.2
+       bgp log-neighbor-changes
+       neighbor 100.64.2.2 remote-as 64496
+       neighbor 100.64.2.2 description CLIENT-AS64496
+       neighbor 100.64.2.2 password LAB-ISPB-2026
+       neighbor 100.64.2.2 ttl-security hops 1
+       neighbor 100.64.20.2 remote-as 64499
+       neighbor 100.64.30.1 remote-as 64497
+       address-family ipv4
+        neighbor 100.64.2.2 activate
+        neighbor 100.64.2.2 send-community both
+        neighbor 100.64.2.2 default-originate
+        neighbor 100.64.2.2 route-map RM-CUST-IN in
+        neighbor 100.64.20.2 activate
+        neighbor 100.64.30.1 activate
+        neighbor 100.64.30.1 send-community both
+        neighbor 100.64.30.1 route-map RM-PEER-IN in
+      !
+  EDGE-1:
+    initial: |
+      hostname EDGE-1
+      no ip domain-lookup
+    final: |
+      hostname EDGE-1
+      no ip domain-lookup
+      interface Loopback0
+       ip address 10.255.255.1 255.255.255.255
+      interface Ethernet0/0
+       description eBGP ISP-A (AS64497)
+       ip address 100.64.1.2 255.255.255.252
+       no ip redirects
+       no ip proxy-arp
+       no shutdown
+      interface Ethernet0/1
+       description eBGP PA-FW ethernet1/1 (AS65000)
+       ip address 10.0.1.1 255.255.255.252
+       no shutdown
+      interface Ethernet0/2
+       description iBGP/OSPF EDGE-2
+       ip address 10.255.12.1 255.255.255.252
+       ip ospf network point-to-point
+       no shutdown
+      !
+      ip bgp-community new-format
+      ! Bogons (RFC 6890). Les plages de documentation 192.0.2/24, 198.51.100/24 et 203.0.113/24
+      ! sont volontairement ABSENTES : dans ce lab, elles jouent le role d'adresses publiques.
+      ! En production, utiliser une liste a jour (ex. Team Cymru) et y ajouter la documentation.
+      ip prefix-list PL-BOGONS seq 10  permit 0.0.0.0/8 le 32
+      ip prefix-list PL-BOGONS seq 20  permit 10.0.0.0/8 le 32
+      ip prefix-list PL-BOGONS seq 30  permit 100.64.0.0/10 le 32
+      ip prefix-list PL-BOGONS seq 40  permit 127.0.0.0/8 le 32
+      ip prefix-list PL-BOGONS seq 50  permit 169.254.0.0/16 le 32
+      ip prefix-list PL-BOGONS seq 60  permit 172.16.0.0/12 le 32
+      ip prefix-list PL-BOGONS seq 70  permit 192.0.0.0/24 le 32
+      ip prefix-list PL-BOGONS seq 80  permit 192.168.0.0/16 le 32
+      ip prefix-list PL-BOGONS seq 90  permit 198.18.0.0/15 le 32
+      ip prefix-list PL-BOGONS seq 100 permit 224.0.0.0/3 le 32
+      !
+      ip prefix-list PL-OWN     seq 10 permit 198.51.100.0/24 le 32
+      ip prefix-list PL-DEFAULT seq 10 permit 0.0.0.0/0
+      ip prefix-list PL-MAX24   seq 10 permit 0.0.0.0/0 ge 8 le 24
+      ip prefix-list PL-AGG     seq 10 permit 198.51.100.0/24
+      ip prefix-list PL-DMZ25   seq 10 permit 198.51.100.0/25
+      ip prefix-list PL-NAT25   seq 10 permit 198.51.100.128/25
+      ip prefix-list PL-RTBH32  seq 10 permit 198.51.100.0/24 ge 32
+      ip prefix-list PL-FROM-PA seq 10 permit 198.51.100.0/24 ge 25 le 25
+      !
+      ! Ancre de l'agregat : la commande network exige une route EXACTE dans la RIB
+      ip route 198.51.100.0 255.255.255.0 Null0 254 name AGG-ANCHOR
+      !
+      ! ---- IGP minimal pour joindre les loopbacks iBGP
+      router ospf 1
+       router-id 10.255.255.1
+       passive-interface default
+       no passive-interface Ethernet0/2
+       network 10.255.255.1 0.0.0.0 area 0
+       network 10.255.12.0 0.0.0.3 area 0
+      !
+      ! ---- Politique entrante ISP-A : bogons, notre propre prefixe, longueur max /24
+      route-map RM-ISPA-IN deny 10
+       match ip address prefix-list PL-BOGONS
+      route-map RM-ISPA-IN deny 20
+       match ip address prefix-list PL-OWN
+      route-map RM-ISPA-IN permit 30
+       match ip address prefix-list PL-DEFAULT PL-MAX24
+      route-map RM-ISPA-IN deny 100
+      !
+      ! ---- Politique sortante : UNIQUEMENT nos prefixes (anti route-leak)
+      route-map RM-ISPA-OUT permit 10
+       match ip address prefix-list PL-AGG
+      route-map RM-ISPA-OUT deny 100
+      !
+      router bgp 64496
+       bgp router-id 10.255.255.1
+       bgp log-neighbor-changes
+       no bgp default ipv4-unicast
+       neighbor 100.64.1.1 remote-as 64497
+       neighbor 100.64.1.1 description eBGP-ISP-A
+       neighbor 100.64.1.1 password LAB-ISPA-2026
+       neighbor 100.64.1.1 ttl-security hops 1
+       neighbor 10.255.255.2 remote-as 64496
+       neighbor 10.255.255.2 description iBGP-EDGE-2
+       neighbor 10.255.255.2 update-source Loopback0
+       address-family ipv4
+        network 198.51.100.0 mask 255.255.255.0
+        neighbor 100.64.1.1 activate
+        neighbor 100.64.1.1 send-community both
+        neighbor 100.64.1.1 remove-private-as
+        neighbor 100.64.1.1 soft-reconfiguration inbound
+        neighbor 100.64.1.1 maximum-prefix 100 80 restart 5
+        neighbor 100.64.1.1 route-map RM-ISPA-IN in
+        neighbor 100.64.1.1 route-map RM-ISPA-OUT out
+        neighbor 10.255.255.2 activate
+        neighbor 10.255.255.2 next-hop-self
+        neighbor 10.255.255.2 send-community both
+      !
+      route-map RM-ISPA-IN permit 30
+       match ip address prefix-list PL-DEFAULT PL-MAX24
+       set local-preference 200
+      !
+      !
+      ip as-path access-list 10 permit ^64497$
+      ! Defaut appris directement d'ISP-A -> MED 10 ; sinon (appris via iBGP) -> MED 100
+      route-map RM-TO-PA permit 10
+       match ip address prefix-list PL-DEFAULT
+       match as-path 10
+       set metric 10
+      route-map RM-TO-PA permit 20
+       match ip address prefix-list PL-DEFAULT
+       set metric 100
+      route-map RM-TO-PA deny 100
+      !
+      router bgp 64496
+       neighbor 10.0.1.2 remote-as 65000
+       neighbor 10.0.1.2 description eBGP-PA-FW
+       address-family ipv4
+        neighbor 10.0.1.2 activate
+        neighbor 10.0.1.2 prefix-list PL-FROM-PA in
+        neighbor 10.0.1.2 maximum-prefix 10 80
+        neighbor 10.0.1.2 route-map RM-TO-PA out
+      !
+      route-map RM-ISPA-OUT permit 20
+       match ip address prefix-list PL-DMZ25
+       set community no-export additive
+      !
+      ip community-list standard CL-BLACKHOLE permit 65535:666
+      !
+      route-map RM-RTBH-TRIGGER permit 10
+       match tag 666
+       set community 65535:666 no-export
+       set origin igp
+      route-map RM-RTBH-TRIGGER deny 100
+      !
+      ! Autoriser le /32 "blackhole" dans la politique sortante vers ISP-A (avant les autres sequences)
+      route-map RM-ISPA-OUT permit 5
+       match ip address prefix-list PL-RTBH32
+       match community CL-BLACKHOLE
+      !
+      router bgp 64496
+       address-family ipv4
+        redistribute static route-map RM-RTBH-TRIGGER
+      !
+      ! Declenchement en cas d'incident (une seule ligne) :
+      ! ip route 198.51.100.10 255.255.255.255 Null0 tag 666 name RTBH-SRV-WEB
+      !
+      ! Fin d'incident :
+      ! no ip route 198.51.100.10 255.255.255.255 Null0 tag 666
+      !
+  EDGE-2:
+    initial: |
+      hostname EDGE-2
+      no ip domain-lookup
+    final: |
+      hostname EDGE-2
+      no ip domain-lookup
+      interface Loopback0
+       ip address 10.255.255.2 255.255.255.255
+      interface Ethernet0/0
+       description eBGP ISP-B (AS64498)
+       ip address 100.64.2.2 255.255.255.252
+       no ip redirects
+       no ip proxy-arp
+       no shutdown
+      interface Ethernet0/1
+       description eBGP PA-FW ethernet1/2 (AS65000)
+       ip address 10.0.2.1 255.255.255.252
+       no shutdown
+      interface Ethernet0/2
+       description iBGP/OSPF EDGE-1
+       ip address 10.255.12.2 255.255.255.252
+       ip ospf network point-to-point
+       no shutdown
+      !
+      ip bgp-community new-format
+      ! Bogons (RFC 6890). Les plages de documentation 192.0.2/24, 198.51.100/24 et 203.0.113/24
+      ! sont volontairement ABSENTES : dans ce lab, elles jouent le role d'adresses publiques.
+      ! En production, utiliser une liste a jour (ex. Team Cymru) et y ajouter la documentation.
+      ip prefix-list PL-BOGONS seq 10  permit 0.0.0.0/8 le 32
+      ip prefix-list PL-BOGONS seq 20  permit 10.0.0.0/8 le 32
+      ip prefix-list PL-BOGONS seq 30  permit 100.64.0.0/10 le 32
+      ip prefix-list PL-BOGONS seq 40  permit 127.0.0.0/8 le 32
+      ip prefix-list PL-BOGONS seq 50  permit 169.254.0.0/16 le 32
+      ip prefix-list PL-BOGONS seq 60  permit 172.16.0.0/12 le 32
+      ip prefix-list PL-BOGONS seq 70  permit 192.0.0.0/24 le 32
+      ip prefix-list PL-BOGONS seq 80  permit 192.168.0.0/16 le 32
+      ip prefix-list PL-BOGONS seq 90  permit 198.18.0.0/15 le 32
+      ip prefix-list PL-BOGONS seq 100 permit 224.0.0.0/3 le 32
+      !
+      ip prefix-list PL-OWN     seq 10 permit 198.51.100.0/24 le 32
+      ip prefix-list PL-DEFAULT seq 10 permit 0.0.0.0/0
+      ip prefix-list PL-MAX24   seq 10 permit 0.0.0.0/0 ge 8 le 24
+      ip prefix-list PL-AGG     seq 10 permit 198.51.100.0/24
+      ip prefix-list PL-DMZ25   seq 10 permit 198.51.100.0/25
+      ip prefix-list PL-NAT25   seq 10 permit 198.51.100.128/25
+      ip prefix-list PL-RTBH32  seq 10 permit 198.51.100.0/24 ge 32
+      ip prefix-list PL-FROM-PA seq 10 permit 198.51.100.0/24 ge 25 le 25
+      !
+      ! Ancre de l'agregat : la commande network exige une route EXACTE dans la RIB
+      ip route 198.51.100.0 255.255.255.0 Null0 254 name AGG-ANCHOR
+      !
+      router ospf 1
+       router-id 10.255.255.2
+       passive-interface default
+       no passive-interface Ethernet0/2
+       network 10.255.255.2 0.0.0.0 area 0
+       network 10.255.12.0 0.0.0.3 area 0
+      !
+      route-map RM-ISPB-IN deny 10
+       match ip address prefix-list PL-BOGONS
+      route-map RM-ISPB-IN deny 20
+       match ip address prefix-list PL-OWN
+      route-map RM-ISPB-IN permit 30
+       match ip address prefix-list PL-DEFAULT PL-MAX24
+      route-map RM-ISPB-IN deny 100
+      !
+      route-map RM-ISPB-OUT permit 10
+       match ip address prefix-list PL-AGG
+      route-map RM-ISPB-OUT deny 100
+      !
+      router bgp 64496
+       bgp router-id 10.255.255.2
+       bgp log-neighbor-changes
+       no bgp default ipv4-unicast
+       neighbor 100.64.2.1 remote-as 64498
+       neighbor 100.64.2.1 description eBGP-ISP-B
+       neighbor 100.64.2.1 password LAB-ISPB-2026
+       neighbor 100.64.2.1 ttl-security hops 1
+       neighbor 10.255.255.1 remote-as 64496
+       neighbor 10.255.255.1 description iBGP-EDGE-1
+       neighbor 10.255.255.1 update-source Loopback0
+       address-family ipv4
+        network 198.51.100.0 mask 255.255.255.0
+        neighbor 100.64.2.1 activate
+        neighbor 100.64.2.1 send-community both
+        neighbor 100.64.2.1 remove-private-as
+        neighbor 100.64.2.1 soft-reconfiguration inbound
+        neighbor 100.64.2.1 maximum-prefix 100 80 restart 5
+        neighbor 100.64.2.1 route-map RM-ISPB-IN in
+        neighbor 100.64.2.1 route-map RM-ISPB-OUT out
+        neighbor 10.255.255.1 activate
+        neighbor 10.255.255.1 next-hop-self
+        neighbor 10.255.255.1 send-community both
+      !
+      route-map RM-TO-PA permit 10
+       match ip address prefix-list PL-DEFAULT
+       set metric 50
+      route-map RM-TO-PA deny 100
+      !
+      router bgp 64496
+       neighbor 10.0.2.2 remote-as 65000
+       neighbor 10.0.2.2 description eBGP-PA-FW
+       address-family ipv4
+        neighbor 10.0.2.2 activate
+        neighbor 10.0.2.2 prefix-list PL-FROM-PA in
+        neighbor 10.0.2.2 maximum-prefix 10 80
+        neighbor 10.0.2.2 route-map RM-TO-PA out
+      !
+      route-map RM-ISPB-OUT permit 10
+       match ip address prefix-list PL-AGG
+       set as-path prepend 64496 64496
+      route-map RM-ISPB-OUT permit 20
+       match ip address prefix-list PL-NAT25
+       set community no-export additive
+      !
+      route-map RM-ISPB-OUT permit 10
+       match ip address prefix-list PL-AGG
+       set as-path prepend 64496 64496
+       set community 64498:70 additive
+      !
+  CORE:
+    initial: |
+      hostname CORE
+      no ip domain-lookup
+    final: |
+      hostname CORE
+      no ip domain-lookup
+      ! Un RD est obligatoire pour utiliser la VRF dans BGP (address-family ipv4 vrf)
+      vrf definition USERS
+       rd 65001:10
+       address-family ipv4
+       exit-address-family
+      vrf definition GUEST
+       rd 65001:20
+       address-family ipv4
+       exit-address-family
+      vrf definition SERVERS
+       rd 65001:30
+       address-family ipv4
+       exit-address-family
+      !
+      interface Loopback0
+       ip address 10.255.255.10 255.255.255.255
+      ! ---- Transit vers le PA (une sous-interface par VRF)
+      interface Ethernet0/0
+       description TRUNK vers PA-FW ethernet1/4
+       no ip address
+       no shutdown
+      interface Ethernet0/0.110
+       encapsulation dot1Q 110
+       vrf forwarding USERS
+       ip address 10.0.110.2 255.255.255.252
+      interface Ethernet0/0.120
+       encapsulation dot1Q 120
+       vrf forwarding GUEST
+       ip address 10.0.120.2 255.255.255.252
+      interface Ethernet0/0.130
+       encapsulation dot1Q 130
+       vrf forwarding SERVERS
+       ip address 10.0.130.2 255.255.255.252
+      ! ---- Passerelles des segments
+      interface Ethernet0/1
+       description TRUNK vers ACC-SW
+       no ip address
+       no shutdown
+      interface Ethernet0/1.10
+       encapsulation dot1Q 10
+       vrf forwarding USERS
+       ip address 10.1.10.1 255.255.255.0
+      interface Ethernet0/1.20
+       encapsulation dot1Q 20
+       vrf forwarding GUEST
+       ip address 10.1.20.1 255.255.255.0
+      interface Ethernet0/2
+       description TRUNK vers SRV-SW
+       no ip address
+       no shutdown
+      interface Ethernet0/2.30
+       encapsulation dot1Q 30
+       vrf forwarding SERVERS
+       ip address 10.1.30.1 255.255.255.0
+      !
+      ip prefix-list PL-DEFAULT-ONLY seq 10 permit 0.0.0.0/0
+      ip prefix-list PL-USERS-OUT    seq 10 permit 10.1.10.0/24
+      ip prefix-list PL-GUEST-OUT    seq 10 permit 10.1.20.0/24
+      ip prefix-list PL-SERVERS-OUT  seq 10 permit 10.1.30.0/24
+      !
+      router bgp 65001
+       bgp log-neighbor-changes
+       no bgp default ipv4-unicast
+       address-family ipv4 vrf USERS
+        bgp router-id 10.255.255.11
+        network 10.1.10.0 mask 255.255.255.0
+        neighbor 10.0.110.1 remote-as 65000
+        neighbor 10.0.110.1 activate
+        neighbor 10.0.110.1 prefix-list PL-DEFAULT-ONLY in
+        neighbor 10.0.110.1 prefix-list PL-USERS-OUT out
+       exit-address-family
+       address-family ipv4 vrf GUEST
+        bgp router-id 10.255.255.12
+        network 10.1.20.0 mask 255.255.255.0
+        neighbor 10.0.120.1 remote-as 65000
+        neighbor 10.0.120.1 activate
+        neighbor 10.0.120.1 prefix-list PL-DEFAULT-ONLY in
+        neighbor 10.0.120.1 prefix-list PL-GUEST-OUT out
+       exit-address-family
+       address-family ipv4 vrf SERVERS
+        bgp router-id 10.255.255.13
+        network 10.1.30.0 mask 255.255.255.0
+        neighbor 10.0.130.1 remote-as 65000
+        neighbor 10.0.130.1 activate
+        neighbor 10.0.130.1 prefix-list PL-DEFAULT-ONLY in
+        neighbor 10.0.130.1 prefix-list PL-SERVERS-OUT out
+       exit-address-family
+      !
+  ACC-SW:
+    initial: |
+      hostname ACC-SW
+      no ip domain-lookup
+      vtp mode transparent
+    final: |
+      hostname ACC-SW
+      vtp mode transparent
+      vlan 10
+       name USERS
+      vlan 20
+       name GUEST
+      vlan 999
+       name PARKING-NATIVE
+      interface Ethernet0/0
+       description TRUNK vers CORE e0/1
+       switchport trunk encapsulation dot1q
+       switchport trunk native vlan 999
+       switchport trunk allowed vlan 10,20
+       switchport mode trunk
+       switchport nonegotiate
+      interface Ethernet0/1
+       description PC-USER
+       switchport mode access
+       switchport access vlan 10
+       spanning-tree portfast
+       spanning-tree bpduguard enable
+      interface Ethernet0/2
+       description PC-GUEST
+       switchport mode access
+       switchport access vlan 20
+       spanning-tree portfast
+       spanning-tree bpduguard enable
+      !
+  SRV-SW:
+    initial: |
+      hostname SRV-SW
+      no ip domain-lookup
+      vtp mode transparent
+    final: |
+      hostname SRV-SW
+      vtp mode transparent
+      vlan 30
+       name SERVERS
+      vlan 999
+       name PARKING-NATIVE
+      interface Ethernet0/0
+       description TRUNK vers CORE e0/2
+       switchport trunk encapsulation dot1q
+       switchport trunk native vlan 999
+       switchport trunk allowed vlan 30
+       switchport mode trunk
+       switchport nonegotiate
+      interface range Ethernet0/1 - 2
+       switchport mode access
+       switchport access vlan 30
+       spanning-tree portfast
+      !
+
+pcs:
+  INET-HOST:   {initial: {}, final: {ip: 203.0.113.10, mask: 255.255.255.128, gateway: 203.0.113.1}}
+  SRV-WEB-DMZ: {initial: {}, final: {ip: 198.51.100.10, mask: 255.255.255.128, gateway: 198.51.100.1}}
+  PC-USER:     {initial: {}, final: {ip: 10.1.10.10, mask: 255.255.255.0, gateway: 10.1.10.1}}
+  PC-GUEST:    {initial: {}, final: {ip: 10.1.20.10, mask: 255.255.255.0, gateway: 10.1.20.1}}
+  SRV-APP:     {initial: {}, final: {ip: 10.1.30.10, mask: 255.255.255.0, gateway: 10.1.30.1}}
+  SRV-DB:      {initial: {}, final: {ip: 10.1.30.20, mask: 255.255.255.0, gateway: 10.1.30.1}}
+
+# Génération : python scripts/build_lab_configs.py labs/cas-pratiques/CAS-02-bgp-edge-security
+eve:
+  habillage: mtc
+  name: CAS-02-BGP-Edge-Security-PaloAlto
+  nodes:
+    INET-HOST:   {template: vpcs,     icon: PC-2D-Laptop-Generic-S.svg,  position: [230, 140]}
+    INET:        {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [560, 140]}
+    ISP-A:       {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [380, 380]}
+    ISP-B:       {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [740, 380]}
+    EDGE-1:      {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [380, 620]}
+    EDGE-2:      {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [740, 620]}
+    PA-FW:       {template: paloalto, icon: Firewall-2D-PA-S.svg,        position: [560, 860]}
+    SRV-WEB-DMZ: {template: vpcs,     icon: Server-2D-WEB-S.svg,         position: [930, 860]}
+    CORE:        {template: iol-l3,   icon: Router-2D-Gen-Dark-S.svg,    position: [560, 1090]}
+    ACC-SW:      {template: iol-l2,   icon: Switch-2D-L2-Generic-S.svg,  position: [360, 1280]}
+    SRV-SW:      {template: iol-l2,   icon: Switch-2D-L2-Generic-S.svg,  position: [760, 1280]}
+    PC-USER:     {template: vpcs,     icon: PC-2D-Desktop-Generic-S.svg, position: [230, 1470]}
+    PC-GUEST:    {template: vpcs,     icon: PC-2D-Laptop-Generic-S.svg,  position: [470, 1470]}
+    SRV-APP:     {template: vpcs,     icon: Server-2D-Generic-S.svg,     position: [660, 1470]}
+    SRV-DB:      {template: vpcs,     icon: Server-2D-Generic-S.svg,     position: [880, 1470]}
+  # Matrice de câblage du lab (L1 à L17)
+  links:
+    - [INET, e0/2, INET-HOST, eth0]
+    - [ISP-A, e0/1, INET, e0/0]
+    - [ISP-B, e0/1, INET, e0/1]
+    - [ISP-A, e0/2, ISP-B, e0/2]
+    - [ISP-A, e0/0, EDGE-1, e0/0]
+    - [ISP-B, e0/0, EDGE-2, e0/0]
+    - [EDGE-1, e0/2, EDGE-2, e0/2]
+    - [EDGE-1, e0/1, PA-FW, eth1/1]
+    - [EDGE-2, e0/1, PA-FW, eth1/2]
+    - [PA-FW, eth1/3, SRV-WEB-DMZ, eth0]
+    - [PA-FW, eth1/4, CORE, e0/0]
+    - [CORE, e0/1, ACC-SW, e0/0]
+    - [CORE, e0/2, SRV-SW, e0/0]
+    - [ACC-SW, e0/1, PC-USER, eth0]
+    - [ACC-SW, e0/2, PC-GUEST, eth0]
+    - [SRV-SW, e0/1, SRV-APP, eth0]
+    - [SRV-SW, e0/2, SRV-DB, eth0]
+  clouds:
+    # Gestion du Palo Alto (interface web HTTPS) : nuage pnet0
+    - {name: Gestion, type: pnet0, node: PA-FW, iface: mgmt, position: [230, 860]}
+  zones:
+    - {label: "AS 64499 · Internet simulé", x: 120, y: 40, w: 580, h: 200, color: "#5C6B82", title_color: "#3A4659"}
+    - {label: "AS 64497 · ISP-A", x: 270, y: 270, w: 220, h: 180, color: "#0B37D4", title_color: "#0B2E8A"}
+    - {label: "AS 64498 · ISP-B", x: 630, y: 270, w: 220, h: 180, color: "#C98A0B", title_color: "#8A5E05"}
+    - {label: "AS 64496 · entreprise (bordure)", x: 270, y: 500, w: 580, h: 190, color: "#2E9E3A", title_color: "#1F6E28"}
+    - {label: "AS 65000 · Palo Alto", x: 450, y: 750, w: 220, h: 190, color: "#D93A3D", title_color: "#A11F22"}
+    - {label: "DMZ 198.51.100.0/25", x: 820, y: 750, w: 220, h: 190, color: "#D93A3D", title_color: "#A11F22"}
+    - {label: "AS 65001 · CORE VRF-lite (USERS · GUEST · SERVERS)", x: 120, y: 980, w: 920, h: 600, color: "#7B3FD1", title_color: "#5A2A9E"}
+  texts:
+    - {x: 1100, y: 520, text: "Préfixe public PI 198.51.100.0/24\nDMZ 198.51.100.0/25 · NAT 198.51.100.128/25\nInternet 203.0.113.0/24"}
+    - {x: 1100, y: 660, text: "Liens fournisseurs 100.64.x.0/30\nEDGE-1–EDGE-2 10.255.12.0/30 (OSPF + iBGP)\nEDGE–PA 10.0.1.0/30 · 10.0.2.0/30"}
+    - {x: 1100, y: 800, text: "Trunk PA–CORE : dot1q 110 / 120 / 130\nUSERS 10.1.10.0/24 · GUEST 10.1.20.0/24\nSERVERS 10.1.30.0/24"}
+    - {x: 120, y: 1630, text: "Images : IOL L3 et L2 (Cisco), PA-VM PAN-OS 10.x, VPCS · labs.masterytechcenter.com", mono: false, box: false, color: "#4A5566"}

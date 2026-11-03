@@ -1,0 +1,20 @@
+! CAS-02 · SRV-SW · configuration corrigée
+hostname SRV-SW
+vtp mode transparent
+vlan 30
+ name SERVERS
+vlan 999
+ name PARKING-NATIVE
+interface Ethernet0/0
+ description TRUNK vers CORE e0/2
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 30
+ switchport mode trunk
+ switchport nonegotiate
+interface range Ethernet0/1 - 2
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+!
+end
