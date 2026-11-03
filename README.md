@@ -38,7 +38,7 @@ Les images d'équipements ne sont pas fournies.
 | ID | Lab | Niveau | Vidéo | Zip |
 |----|-----|--------|-------|-----|
 | CAS-01 | [Segmentation sécurisée avec OSPF multi-area et Palo Alto](labs/cas-pratiques/CAS-01-ospf-segmentation-paloalto/README.md) | Avancé | à venir | [PDF](labs/cas-pratiques/CAS-01-ospf-segmentation-paloalto/docs/CAS-01_Lab-complet.pdf) |
-| CAS-02 | [BGP multi-homé sécurisé et VRF-lite avec Palo Alto](labs/cas-pratiques/CAS-02-bgp-edge-security/README.md) | Avancé | à venir | [HTML](labs/cas-pratiques/CAS-02-bgp-edge-security/docs/CAS-02_Lab-complet.html) |
+| CAS-02 | [BGP multi-homé sécurisé et VRF-lite avec Palo Alto](labs/cas-pratiques/CAS-02-bgp-edge-security/README.md) | Avancé | à venir | [PDF](labs/cas-pratiques/CAS-02-bgp-edge-security/docs/CAS-02_Lab-complet.pdf) |
 
 ## Débutants
 | ID | Lab | Niveau | Vidéo | Zip |

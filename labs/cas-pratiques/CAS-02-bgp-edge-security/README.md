@@ -28,7 +28,7 @@ NEXA Industries (AS 64496, préfixe PI 198.51.100.0/24) est multi-homée sur deu
 
 ## Documents
 
-- 📘 [Lab complet, solutions incluses (HTML)](docs/CAS-02_Lab-complet.html) : 11 tâches, résultats attendus et pièges, à ouvrir dans le navigateur
+- 📘 [Lab complet, solutions incluses (PDF)](docs/CAS-02_Lab-complet.pdf) : 11 tâches, résultats attendus et pièges
 
 ## Fichiers du lab
 
