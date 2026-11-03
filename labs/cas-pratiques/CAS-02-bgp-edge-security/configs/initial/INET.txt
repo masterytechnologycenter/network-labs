@@ -1,0 +1,4 @@
+! CAS-02 · INET · configuration de départ (contient la panne)
+hostname INET
+no ip domain-lookup
+end

@@ -1,0 +1,3 @@
+set pcname SRV-APP
+ip 10.1.30.10/24 10.1.30.1
+save

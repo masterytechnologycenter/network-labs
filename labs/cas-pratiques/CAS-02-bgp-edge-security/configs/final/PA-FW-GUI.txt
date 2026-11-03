@@ -1,0 +1,90 @@
+# CAS-02 · PA-FW · configuration finale (interface web PAN-OS 10.x, virtual router « default »)
+# Assemblée depuis les solutions des tâches T1, T5, T7 et T8 du lab. Valeurs de laboratoire.
+
+# ===== T1 · PA-FW — GUI (GUI) =====
+# Network > Network Profiles > Interface Mgmt : PING-ONLY (Ping)
+# Network > Zones (Layer3) : OUTSIDE, DMZ, USERS, GUEST, SERVERS
+# Network > Interfaces > Ethernet (VR default) :
+#   ethernet1/1   10.0.1.2/30        zone OUTSIDE   PING-ONLY
+#   ethernet1/2   10.0.2.2/30        zone OUTSIDE   PING-ONLY
+#   ethernet1/3   198.51.100.1/25    zone DMZ       PING-ONLY
+#   ethernet1/4   Layer3 sans IP (parent)
+#     ethernet1/4.110  tag 110  10.0.110.1/30  zone USERS
+#     ethernet1/4.120  tag 120  10.0.120.1/30  zone GUEST
+#     ethernet1/4.130  tag 130  10.0.130.1/30  zone SERVERS
+# Les DEUX interfaces vers les EDGE sont dans la MEME zone OUTSIDE (voir T8)
+# Commit
+
+# ===== T5 · PA-FW — GUI (Network > Virtual Routers > default) (GUI) =====
+# Static Routes > Add : NAT-POOL-ANCHOR  198.51.100.128/25  Next Hop : Discard
+# Redistribution Profile > Add : RP-PUBLIC  Priority 1  Redistribute
+#     Source Type : [x] connect  [x] static
+#     Destination : 198.51.100.0/25 , 198.51.100.128/25
+# BGP > General :
+#     [x] Enable   Router ID 10.255.255.100   AS Number 65000
+#     [ ] Reject Default Route        <- DECOCHER (coche par defaut !)
+#     [x] Install Route               <- sinon les routes BGP ne vont pas dans la RIB
+#     [ ] Allow Redistribute Default Route (inutile ici)
+# BGP > Peer Group > Add : PG-EDGES  Type EBGP
+#     Peer EDGE-1 : AS 64496, Local Address ethernet1/1 10.0.1.2/30, Peer Address 10.0.1.1
+#     Peer EDGE-2 : AS 64496, Local Address ethernet1/2 10.0.2.2/30, Peer Address 10.0.2.1
+# BGP > Import :
+#     1. IMP-EDGES-DEFAULT  Used By PG-EDGES  Match Address Prefix 0.0.0.0/0 [x] Exact  Action Allow
+#     2. IMP-DENY-ALL       Used By PG-EDGES  Match Address Prefix 0.0.0.0/0 [ ] Exact  Action Deny
+# BGP > Export :
+#     1. EXP-EDGES-PUBLIC   Used By PG-EDGES  Prefix 198.51.100.0/25 [x] Exact, 198.51.100.128/25 [x] Exact  Allow
+#     2. EXP-EDGES-DENY     Used By PG-EDGES  Prefix 0.0.0.0/0 (non exact)  Deny
+# BGP > Redist Rules > Add : RP-PUBLIC (Enable)
+# Commit
+
+# ===== T5 · PA-FW — CLI indicative (extrait) (PAN-OS CLI) =====
+set network virtual-router default routing-table ip static-route NAT-POOL-ANCHOR destination 198.51.100.128/25 nexthop discard
+set network virtual-router default protocol bgp enable yes router-id 10.255.255.100 local-as 65000
+set network virtual-router default protocol bgp reject-default-route no
+set network virtual-router default protocol bgp install-route yes
+set network virtual-router default protocol bgp peer-group PG-EDGES type ebgp
+set network virtual-router default protocol bgp peer-group PG-EDGES peer EDGE-1 peer-as 64496 peer-address ip 10.0.1.1 local-address interface ethernet1/1 ip 10.0.1.2/30
+set network virtual-router default protocol bgp peer-group PG-EDGES peer EDGE-2 peer-as 64496 peer-address ip 10.0.2.1 local-address interface ethernet1/2 ip 10.0.2.2/30
+
+# ===== T7 · PA-FW — GUI (GUI) =====
+# BGP > Peer Group > Add : PG-CORE  Type EBGP
+#   CORE-USERS   : AS 65001, Local ethernet1/4.110 10.0.110.1/30, Peer 10.0.110.2
+#   CORE-GUEST   : AS 65001, Local ethernet1/4.120 10.0.120.1/30, Peer 10.0.120.2
+#   CORE-SERVERS : AS 65001, Local ethernet1/4.130 10.0.130.1/30, Peer 10.0.130.2
+# BGP > Import (inserer AVANT IMP-DENY-ALL, et ajouter PG-CORE au Used By de IMP-DENY-ALL) :
+#   IMP-CORE    Used By PG-CORE  Match 10.1.0.0/16 (non exact)  Allow
+# BGP > Export :
+#   EXP-CORE-DEFAULT  Used By PG-CORE  Match 0.0.0.0/0 [x] Exact  Allow
+#   EXP-CORE-DENY     Used By PG-CORE  Match 0.0.0.0/0 (non exact) Deny
+# Commit
+
+# ===== T8 · PA-FW — objets (GUI) =====
+# Objects > Addresses :
+#   USERS-NET 10.1.10.0/24 · GUEST-NET 10.1.20.0/24 · SRV-APP 10.1.30.10 · SRV-DB 10.1.30.20
+#   SRV-WEB-DMZ 198.51.100.10 · NAT-PUBLIC-IP 198.51.100.129
+
+# ===== T8 · PA-FW — NAT et Zone Protection (GUI) (GUI) =====
+# Policies > NAT > Add : NAT-INTERNET
+#   Original : Source Zone USERS, GUEST   Destination Zone OUTSIDE   Destination Interface any
+#   Translated : Source Address Translation = Dynamic IP And Port
+#                Address Type = Translated Address : NAT-PUBLIC-IP (198.51.100.129)
+# Network > Network Profiles > Zone Protection > ZP-OUTSIDE :
+#   Flood Protection (SYN cookies, ICMP, UDP), Reconnaissance Protection (port scan, host sweep),
+#   Packet Based Attack Protection : [x] Spoofed IP address  [x] Strict IP Address Check
+# Network > Zones > OUTSIDE > Zone Protection Profile : ZP-OUTSIDE
+# Commit
+
+# ===== T8 · PA-FW — CLI indicative (extrait) (PAN-OS CLI) =====
+set rulebase security rules R90-GUEST-ISOLATION from GUEST to [ USERS SERVERS DMZ ] source any destination any application any service any action deny log-end yes
+set rulebase nat rules NAT-INTERNET from [ USERS GUEST ] to OUTSIDE source any destination any service any source-translation dynamic-ip-and-port translated-address NAT-PUBLIC-IP
+set rulebase default-security-rules rules interzone-default action deny log-end yes
+# ===== T8 · Politique de sécurité (Policies > Security), dans cet ordre =====
+# Règle               Zone src  Source       Zone dst                Destination   Application                                Action
+# R10-USERS-INTERNET  USERS     USERS-NET    OUTSIDE                 any           dns, web-browsing, ssl, ping, traceroute   Allow + profils AV/Vuln/URL
+# R11-GUEST-INTERNET  GUEST     GUEST-NET    OUTSIDE                 any           dns, web-browsing, ssl, ping               Allow + URL Filtering
+# R20-USERS-TO-APP    USERS     USERS-NET    SERVERS                 SRV-APP       ssh, web-browsing, ssl, ping               Allow
+# R30-INTERNET-TO-DMZ OUTSIDE   any          DMZ                     SRV-WEB-DMZ   web-browsing, ssl, ping                    Allow + Vulnerability Protection
+# R40-DMZ-TO-DB       DMZ       SRV-WEB-DMZ  SERVERS                 SRV-DB        mysql                                      Allow
+# R90-GUEST-ISOLATION GUEST     any          USERS, SERVERS, DMZ     any           any                                        Deny + log
+# interzone-default (surcharge) : Deny + Log at Session End
+# Commit

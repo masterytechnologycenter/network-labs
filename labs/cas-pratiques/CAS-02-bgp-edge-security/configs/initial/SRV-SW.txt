@@ -1,0 +1,5 @@
+! CAS-02 · SRV-SW · configuration de départ (contient la panne)
+hostname SRV-SW
+no ip domain-lookup
+vtp mode transparent
+end

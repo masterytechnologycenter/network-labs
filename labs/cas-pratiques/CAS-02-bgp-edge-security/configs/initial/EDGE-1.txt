@@ -1,0 +1,4 @@
+! CAS-02 · EDGE-1 · configuration de départ (contient la panne)
+hostname EDGE-1
+no ip domain-lookup
+end

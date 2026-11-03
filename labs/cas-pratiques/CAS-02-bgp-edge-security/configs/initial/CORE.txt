@@ -1,0 +1,4 @@
+! CAS-02 · CORE · configuration de départ (contient la panne)
+hostname CORE
+no ip domain-lookup
+end
