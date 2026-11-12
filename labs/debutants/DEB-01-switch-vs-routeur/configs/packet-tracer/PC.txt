@@ -1,0 +1,5 @@
+Réglages des PC : Desktop → IP Configuration
+
+PC1      IP 192.168.10.10  masque 255.255.255.0  passerelle 192.168.10.1
+PC3      IP 192.168.10.30  masque 255.255.255.0  passerelle 192.168.10.1
+PC2      IP 192.168.20.20  masque 255.255.255.0  passerelle 192.168.20.1

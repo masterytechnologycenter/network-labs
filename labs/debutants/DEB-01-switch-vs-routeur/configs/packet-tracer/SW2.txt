@@ -1,0 +1,8 @@
+! SW2 · 2960-24TT · à coller tel quel dans l'onglet CLI
+no
+enable
+configure terminal
+hostname SW2
+end
+write memory
+

@@ -1,0 +1,4 @@
+! DEB-01 · R1 · point de départ : à toi de configurer
+hostname R1
+!
+end

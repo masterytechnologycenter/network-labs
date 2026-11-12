@@ -1,0 +1,4 @@
+! DEB-01 · SW2 · point de départ : à toi de configurer
+hostname SW2
+!
+end

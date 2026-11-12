@@ -15,5 +15,6 @@ Les images d'équipements ne sont pas fournies.
 | [CAS · Cas pratiques](cas-pratiques/index.md) | Scénarios multi-domaines |
 | [INC · Incidents en entreprise](incidents/index.md) | Pannes réelles de production, avec la vidéo |
 | [DEB · Débutants](debutants/index.md) | Un concept CCNA par lab, en quelques minutes |
+| [PT · TP Packet Tracer](tp-packet-tracer/index.md) | Un petit réseau construit de zéro, le fichier .pkt à télécharger |
 
 Niveaux : Fondamental · Intermédiaire · Avancé, indiqués dans chaque lab.
