@@ -1,0 +1,4 @@
+! DEB-01 · SW1 · solution : aucune configuration nécessaire (VLAN 1 par défaut)
+hostname SW1
+!
+end

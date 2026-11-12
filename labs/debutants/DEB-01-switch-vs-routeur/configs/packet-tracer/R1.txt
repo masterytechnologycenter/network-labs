@@ -1,0 +1,16 @@
+! R1 · 2911 · à coller tel quel dans l'onglet CLI
+no
+enable
+configure terminal
+hostname R1
+interface GigabitEthernet0/0
+ description LAN 192.168.10.0/24 vers SW1
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+interface GigabitEthernet0/1
+ description LAN 192.168.20.0/24 vers SW2
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+end
+write memory
+

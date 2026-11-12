@@ -1,0 +1,14 @@
+! DEB-01 · R1 · solution
+hostname R1
+!
+interface Ethernet0/0
+ description LAN 192.168.10.0/24 vers SW1 (G0/0 dans la vidéo)
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+!
+interface Ethernet0/1
+ description LAN 192.168.20.0/24 vers SW2 (G0/1 dans la vidéo)
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+!
+end

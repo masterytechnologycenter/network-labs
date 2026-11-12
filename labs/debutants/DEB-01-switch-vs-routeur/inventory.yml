@@ -1,0 +1,98 @@
+lab:
+  id: DEB-01
+  title: "Switch ou routeur : qui fait quoi ?"
+  ticket: "Relie deux réseaux avec un routeur, puis observe : la table MAC qui se remplit, le rôle de la passerelle et les adresses MAC qui changent à chaque saut."
+  ticket_label: "MISSION"
+  parcours: debutants
+  niveau: "Débutant (CCNA)"
+  ccna_v2: ["2.1"]
+  plateforme: [Packet Tracer, PnetLab, EVE-NG]
+  author: "Hilaire TCHOUATEU"
+  video: ""
+  zip: ""
+
+nodes:
+  - name: R1
+    image: "IOL L3"
+    interfaces:
+      Ethernet0/0: 192.168.10.1/24   # vers SW1 e0/0 (G0/0 dans la vidéo)
+      Ethernet0/1: 192.168.20.1/24   # vers SW2 e0/0 (G0/1 dans la vidéo)
+  - name: SW1
+    image: "IOL L2"
+    interfaces:
+      Ethernet0/0: "vers R1 e0/0"
+      Ethernet0/1: "vers PC1 eth0"
+      Ethernet0/2: "vers PC3 eth0"
+  - name: SW2
+    image: "IOL L2"
+    interfaces:
+      Ethernet0/0: "vers R1 e0/1"
+      Ethernet0/1: "vers PC2 eth0"
+  - {name: PC1, image: VPCS, ip: 192.168.10.10/24, gateway: 192.168.10.1}
+  - {name: PC3, image: VPCS, ip: 192.168.10.30/24, gateway: 192.168.10.1}
+  - {name: PC2, image: VPCS, ip: 192.168.20.20/24, gateway: 192.168.20.1}
+
+# Génération du .unl : python scripts/make_unl.py labs/debutants/DEB-01-switch-vs-routeur
+eve:
+  habillage: mtc
+  name: Debutants-01-Switch-vs-Routeur
+  nodes:
+    R1:  {template: iol-l3, icon: Router-2D-Gen-Dark-S.svg,        position: [600, 240]}
+    SW1: {template: iol-l2, icon: Switch-2D-L2-Generic-S.svg,          position: [330, 440]}
+    SW2: {template: iol-l2, icon: Switch-2D-L2-Generic-S.svg,          position: [850, 440]}
+    PC1: {template: vpcs,   icon: PC-2D-Desktop-Generic-S.svg, position: [210, 650]}
+    PC3: {template: vpcs,   icon: PC-2D-Desktop-Generic-S.svg, position: [450, 650]}
+    PC2: {template: vpcs,   icon: PC-2D-Desktop-Generic-S.svg, position: [950, 650]}
+  links:
+    - [R1, e0/0, SW1, e0/0]
+    - [R1, e0/1, SW2, e0/0]
+    - [SW1, e0/1, PC1, eth0]
+    - [SW1, e0/2, PC3, eth0]
+    - [SW2, e0/1, PC2, eth0]
+  zones:
+    - {label: "RÉSEAU 192.168.10.0/24", x: 150, y: 330, w: 400, h: 420, color: "#0B37D4", title_color: "#0B2E8A"}
+    - {label: "RÉSEAU 192.168.20.0/24", x: 690, y: 330, w: 400, h: 420, color: "#53AC21", title_color: "#2B6A10"}
+  texts:
+    - {x: 150, y: 30, text: "DEB-01 · Switch ou routeur · Mastery Tech Center", mono: false, bold: true, size: 18, box: false, color: "#05080D"}
+    - {x: 470, y: 130, text: "R1 · e0/0 192.168.10.1/24 · e0/1 192.168.20.1/24"}
+    - {x: 160, y: 765, text: "PC1 .10.10 · PC3 .10.30 (passerelle .10.1)", box: false}
+    - {x: 700, y: 765, text: "PC2 .20.20 (passerelle .20.1)", box: false}
+    - {x: 150, y: 820, text: "Images : IOL L3 (routeur), IOL L2 (switchs), VPCS (PC) · labs.masterytechcenter.com", mono: false, box: false, color: "#4A5566"}
+
+# Kit Packet Tracer : python scripts/make_pt_kit.py labs/debutants/DEB-01-switch-vs-routeur
+packet_tracer:
+  devices:
+    R1:
+      model: "2911"
+      kind: router
+      config: |
+        hostname R1
+        interface GigabitEthernet0/0
+         description LAN 192.168.10.0/24 vers SW1
+         ip address 192.168.10.1 255.255.255.0
+         no shutdown
+        interface GigabitEthernet0/1
+         description LAN 192.168.20.0/24 vers SW2
+         ip address 192.168.20.1 255.255.255.0
+         no shutdown
+    SW1: {model: "2960-24TT", kind: switch, config: "hostname SW1"}
+    SW2: {model: "2960-24TT", kind: switch, config: "hostname SW2"}
+    PC1: {model: PC-PT, kind: pc, ip: 192.168.10.10, mask: 255.255.255.0, gateway: 192.168.10.1}
+    PC3: {model: PC-PT, kind: pc, ip: 192.168.10.30, mask: 255.255.255.0, gateway: 192.168.10.1}
+    PC2: {model: PC-PT, kind: pc, ip: 192.168.20.20, mask: 255.255.255.0, gateway: 192.168.20.1}
+  links:
+    - [PC1, FastEthernet0, SW1, FastEthernet0/1]
+    - [PC3, FastEthernet0, SW1, FastEthernet0/3]
+    - [SW1, GigabitEthernet0/1, R1, GigabitEthernet0/0]
+    - [R1, GigabitEthernet0/1, SW2, GigabitEthernet0/1]
+    - [PC2, FastEthernet0, SW2, FastEthernet0/1]
+  checks:
+    - "Tous les voyants des câbles sont verts (attendre 30 s que les ports des switchs passent en vert)"
+    - "Depuis PC1 : ping 192.168.10.30 (PC3, même réseau) → réussi"
+    - "Depuis PC1 : ping 192.168.20.20 (PC2, autre réseau) → réussi (le premier essai peut échouer, le temps de l'ARP)"
+    - "Sur R1 : show ip route → deux réseaux connectés (C) 192.168.10.0/24 et 192.168.20.0/24"
+  observe:
+    - "Passe en mode Simulation (en bas à droite), filtre sur ICMP et ARP."
+    - "Depuis PC1, ping 192.168.10.30 : la requête ARP part sur tous les ports de SW1 (l'inondation), puis la réponse revient directement."
+    - "Sur SW1 : show mac-address-table → PC1 et PC3 y sont, avec leur port."
+    - "Depuis PC1, ping 192.168.20.20 : clique sur l'enveloppe à chaque saut. Entre PC1 et R1, la MAC de destination est celle de R1 G0/0 ; entre R1 et PC2, c'est celle de PC2. L'IP de destination reste 192.168.20.20 du début à la fin."

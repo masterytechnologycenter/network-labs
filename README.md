@@ -43,7 +43,13 @@ Les images d'équipements ne sont pas fournies.
 ## Débutants
 | ID | Lab | Niveau | Vidéo | Zip |
 |----|-----|--------|-------|-----|
+| DEB-01 | [Switch ou routeur : qui fait quoi ?](labs/debutants/DEB-01-switch-vs-routeur/README.md) | Débutant | publiée | à venir |
 | DEB-07 | [Trunk 802.1Q : plusieurs VLAN, un seul câble](labs/debutants/DEB-07-trunk-8021q/README.md) | Débutant | à venir | à venir |
+
+## TP Packet Tracer
+| ID | Lab | Niveau | Vidéo | Fichier |
+|----|-----|--------|-------|-----|
+| PT-TP01 | [Le réseau d'un petit bureau… et la passerelle oubliée](labs/tp-packet-tracer/PT-TP01-petit-bureau/README.md) | Débutant | 12/11/2026 | [.pkt](labs/tp-packet-tracer/PT-TP01-petit-bureau/topology/PT-TP01-petit-bureau.pkt) |
 
 ## Incidents en entreprise
 
