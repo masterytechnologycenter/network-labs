@@ -57,3 +57,4 @@ Les images d'équipements ne sont pas fournies.
 |----|-----|--------|-------|-----|
 | INC-01 | [OSPF bloqué en EXSTART (MTU GRE/IPsec)](labs/incidents/INC-01-ospf-mtu-gre-ipsec/README.md) | CCNA → CCNP | à venir | [zip](https://github.com/masterytechnologycenter/network-labs/releases/download/INC-01/INC-01-ospf-mtu-gre-ipsec.zip) |
 | INC-02 | [Boucle STP et BPDU filter](labs/incidents/INC-02-boucle-stp-bpdufilter/README.md) | CCNA | à venir | [zip](https://github.com/masterytechnologycenter/network-labs/releases/download/INC-02/INC-02-boucle-stp-bpdufilter.zip) |
+| INC-05 | [EtherChannel : mode on contre LACP active](labs/incidents/INC-05-etherchannel-on-lacp/README.md) | CCNA | publiée | [zip](https://github.com/masterytechnologycenter/network-labs/releases/download/INC-05/INC-05-etherchannel-on-lacp.zip) |

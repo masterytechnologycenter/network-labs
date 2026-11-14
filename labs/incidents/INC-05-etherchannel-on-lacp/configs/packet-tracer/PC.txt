@@ -1,0 +1,5 @@
+Réglages des PC : Desktop → IP Configuration
+
+SRV-FICHIERS IP 10.5.10.10  masque 255.255.255.0  passerelle 10.5.10.1
+PC-1     IP 10.5.10.11  masque 255.255.255.0  passerelle 10.5.10.1
+PC-2     IP 10.5.10.12  masque 255.255.255.0  passerelle 10.5.10.1
