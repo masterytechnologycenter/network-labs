@@ -1,0 +1,40 @@
+! INC-05 · ACC-1 · configuration initiale (contient la panne : channel-group en mode on)
+hostname ACC-1
+no ip domain-lookup
+!
+spanning-tree mode rapid-pvst
+!
+vlan 10
+ name BUREAUX
+!
+interface Port-channel1
+ description Vers DIST-SW (2 x 1 Gbit/s)
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface range GigabitEthernet0/1 - 2
+ description Vers DIST-SW
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode on
+!
+interface GigabitEthernet0/3
+ description PC-1
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/0
+ description PC-2
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast edge
+!
+interface Vlan10
+ ip address 10.5.10.2 255.255.255.0
+ no shutdown
+!
+line con 0
+ logging synchronous
+!
+end

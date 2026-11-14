@@ -1,0 +1,39 @@
+! DIST-SW · 2960-24TT · à coller tel quel dans l'onglet CLI
+no
+enable
+configure terminal
+hostname DIST-SW
+no ip domain-lookup
+!
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 priority 4096
+!
+vlan 10
+ name BUREAUX
+!
+interface range GigabitEthernet0/1 - 2
+ description Vers ACC-1
+ switchport mode trunk
+ channel-group 1 mode active
+!
+interface Port-channel1
+ description Vers ACC-1 (2 x 1 Gbit/s)
+ switchport mode trunk
+!
+! Fa0/1 ici = Gi0/3 du lab PnetLab
+interface FastEthernet0/1
+ description SRV-FICHIERS
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+!
+interface Vlan10
+ ip address 10.5.10.1 255.255.255.0
+ no shutdown
+!
+line con 0
+ logging synchronous
+!
+end
+write memory
+

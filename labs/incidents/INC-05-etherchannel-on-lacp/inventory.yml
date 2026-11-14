@@ -1,0 +1,236 @@
+lab:
+  id: INC-05
+  title: "EtherChannel qui ne monte pas : mode on contre LACP active"
+  ticket: "Lundi 8 h 05. Le switch d'accès du 2e étage a été remplacé cette nuit. Plus aucun poste de l'étage n'accède au serveur de fichiers. Les deux câbles vers la distribution sont bien branchés."
+  ticket_label: "TICKET INC-05 · P1"
+  parcours: incidents
+  niveau: CCNA
+  ccna_v2: ["2.1"]   # numérotation de la formation CCNA v2 du dépôt (comme LAB-2.1-etherchannel)
+  plateforme: [PnetLab, EVE-NG]
+  author: "Hilaire TCHOUATEU"
+  video: ""
+  verifie: "05/11/2026 · PnetLab · vIOS L2 15.2(20200924) · captures docs/masterytech/tests-lab/TEST-INC05/resultats.txt (panne, correction, passive+passive)"
+  zip: "https://github.com/masterytechnologycenter/network-labs/releases/download/INC-05/INC-05-etherchannel-on-lacp.zip"
+
+nodes:
+  - name: DIST-SW
+    image: "vIOS L2"
+    interfaces:
+      GigabitEthernet0/1: "Po1 · LACP active"   # vers ACC-1 Gi0/1
+      GigabitEthernet0/2: "Po1 · LACP active"   # vers ACC-1 Gi0/2
+      GigabitEthernet0/3: access VLAN 10        # vers SRV-FICHIERS eth0
+      Vlan10: 10.5.10.1/24
+  - name: ACC-1
+    image: "vIOS L2"
+    note: "Switch d'accès remplacé pendant la nuit : la panne est ici"
+    interfaces:
+      GigabitEthernet0/1: "Po1 · mode on (la panne)"   # vers DIST-SW Gi0/1
+      GigabitEthernet0/2: "Po1 · mode on (la panne)"   # vers DIST-SW Gi0/2
+      GigabitEthernet0/3: access VLAN 10               # vers PC-1 eth0
+      GigabitEthernet1/0: access VLAN 10               # vers PC-2 eth0
+      Vlan10: 10.5.10.2/24
+  - {name: SRV-FICHIERS, image: VPCS, ip: 10.5.10.10/24, gateway: 10.5.10.1}
+  - {name: PC-1, image: VPCS, ip: 10.5.10.11/24, gateway: 10.5.10.1}
+  - {name: PC-2, image: VPCS, ip: 10.5.10.12/24, gateway: 10.5.10.1}
+
+# Génération : python scripts/make_unl.py labs/incidents/INC-05-etherchannel-on-lacp
+#              python scripts/make_diagram.py labs/incidents/INC-05-etherchannel-on-lacp --png
+#              python -X utf8 scripts/make_pt_kit.py labs/incidents/INC-05-etherchannel-on-lacp
+eve:
+  habillage: mtc
+  name: Incident-05-EtherChannel-On-LACP
+  nodes:
+    DIST-SW:      {template: vios-l2, icon: Switch-2D-L3-Generic-S.svg,          position: [600, 170]}
+    SRV-FICHIERS: {template: vpcs,    icon: Server-2D-Generic-S.svg,     position: [920, 170]}
+    ACC-1:        {template: vios-l2, icon: Switch-2D-L2-Generic-S.svg,          position: [600, 470]}
+    PC-1:         {template: vpcs,    icon: PC-2D-Desktop-Generic-S.svg, position: [400, 680]}
+    PC-2:         {template: vpcs,    icon: PC-2D-Desktop-Generic-S.svg, position: [800, 680]}
+  links:
+    - [DIST-SW, Gi0/1, ACC-1, Gi0/1]
+    - [DIST-SW, Gi0/2, ACC-1, Gi0/2]
+    - [DIST-SW, Gi0/3, SRV-FICHIERS, eth0]
+    - [ACC-1, Gi0/3, PC-1, eth0]
+    - [ACC-1, Gi1/0, PC-2, eth0]
+  zones:
+    - {label: "SITE · VLAN 10 BUREAUX (10.5.10.0/24)", x: 230, y: 70, w: 1000, h: 720, color: "#0B37D4", title_color: "#0B2E8A"}
+    - {label: "Po1 · 2 x 1 Gbit/s", x: 320, y: 300, w: 420, h: 110, color: "#E5383B", title_color: "#B3261E", opacity: 0.08}
+  texts:
+    - {x: 230, y: 20, text: "INC-05 · EtherChannel on contre LACP · Mastery Tech Center", mono: false, bold: true, size: 18, box: false, color: "#05080D"}
+    - {x: 250, y: 150, text: "Root bridge VLAN 10 (priorité 4096)\nSVI 10.5.10.1/24 (passerelle)"}
+    - {x: 790, y: 290, text: "DIST-SW Gi0/1-2 :\nchannel-group 1 mode active (LACP)"}
+    - {x: 790, y: 380, text: "ACC-1 Gi0/1-2 :\nchannel-group 1 mode on (aucune négociation)", border: "#E5383B", color: "#B3261E"}
+    - {x: 250, y: 470, text: "Remplacé cette nuit\nSVI 10.5.10.2/24", border: "#E5383B"}
+    - {x: 230, y: 805, text: "Images : vIOS L2 (switchs), VPCS (PC et serveur) · labs.masterytechcenter.com", mono: false, box: false, color: "#4A5566"}
+
+# Kit Packet Tracer : python -X utf8 scripts/make_pt_kit.py labs/incidents/INC-05-etherchannel-on-lacp
+packet_tracer:
+  devices:
+    DIST-SW: {model: "2960-24TT", kind: switch}
+    ACC-1: {model: "2960-24TT", kind: switch}
+    SRV-FICHIERS: {model: Server-PT, kind: server, ip: 10.5.10.10, mask: 255.255.255.0, gateway: 10.5.10.1}
+    PC-1: {model: PC-PT, kind: pc, ip: 10.5.10.11, mask: 255.255.255.0, gateway: 10.5.10.1}
+    PC-2: {model: PC-PT, kind: pc, ip: 10.5.10.12, mask: 255.255.255.0, gateway: 10.5.10.1}
+  links:
+    - [DIST-SW, GigabitEthernet0/1, ACC-1, GigabitEthernet0/1, croise]
+    - [DIST-SW, GigabitEthernet0/2, ACC-1, GigabitEthernet0/2, croise]
+    - [SRV-FICHIERS, FastEthernet0, DIST-SW, FastEthernet0/1]
+    - [PC-1, FastEthernet0, ACC-1, FastEthernet0/1]
+    - [PC-2, FastEthernet0, ACC-1, FastEthernet0/2]
+  checks:
+    - "Attendre 1 minute que les ports des switchs passent au vert (ou à l'orange s'ils sont bloqués)"
+    - "Depuis PC-1 : ping 10.5.10.10 (SRV-FICHIERS) : noter le résultat"
+    - "Sur ACC-1 et sur DIST-SW : show etherchannel summary : noter les lettres entre parenthèses de Po1, Gi0/1 et Gi0/2"
+  observe:
+    - "Sur DIST-SW : show lacp neighbor : aucun voisin LACP tant qu'ACC-1 est en mode on"
+    - "Après la correction (ACC-1 en mode active), sur les deux switchs : show etherchannel summary : Po1(SU), Gi0/1(P) et Gi0/2(P)"
+    - "Depuis PC-1 : ping 10.5.10.10 : réussi"
+  notes:   # rappel, non lu par make_pt_kit.py
+    - "Le 2960 de Packet Tracer refuse switchport trunk encapsulation dot1q : ligne retirée du kit Packet Tracer, gardée dans les configs PnetLab (vIOS L2 l'exige)."
+    - "spanning-tree portfast edge (vIOS L2) remplacé par spanning-tree portfast (syntaxe du 2960 de Packet Tracer)."
+    - "Ports : Gi0/1 et Gi0/2 identiques ; Gi0/3 de DIST-SW = FastEthernet0/1 ; Gi0/3 et Gi1/0 d'ACC-1 = FastEthernet0/1 et 0/2."
+    - "Le comportement de Packet Tracer face à on contre active n'est pas garanti identique à celui d'IOS : les vérifications notent ce qu'on voit, sans l'imposer."
+configs:   # pt_initial / pt_final : versions Packet Tracer des configs de configs/initial et configs/final
+  DIST-SW:
+    pt_initial: |
+        hostname DIST-SW
+        no ip domain-lookup
+        !
+        spanning-tree mode rapid-pvst
+        spanning-tree vlan 10 priority 4096
+        !
+        vlan 10
+         name BUREAUX
+        !
+        interface range GigabitEthernet0/1 - 2
+         description Vers ACC-1
+         switchport mode trunk
+         channel-group 1 mode active
+        !
+        interface Port-channel1
+         description Vers ACC-1 (2 x 1 Gbit/s)
+         switchport mode trunk
+        !
+        ! Fa0/1 ici = Gi0/3 du lab PnetLab
+        interface FastEthernet0/1
+         description SRV-FICHIERS
+         switchport mode access
+         switchport access vlan 10
+         spanning-tree portfast
+        !
+        interface Vlan10
+         ip address 10.5.10.1 255.255.255.0
+         no shutdown
+        !
+        line con 0
+         logging synchronous
+        !
+    pt_final: |
+        hostname DIST-SW
+        no ip domain-lookup
+        !
+        spanning-tree mode rapid-pvst
+        spanning-tree vlan 10 priority 4096
+        !
+        vlan 10
+         name BUREAUX
+        !
+        interface range GigabitEthernet0/1 - 2
+         description Vers ACC-1
+         switchport mode trunk
+         channel-group 1 mode active
+        !
+        interface Port-channel1
+         description Vers ACC-1 (2 x 1 Gbit/s)
+         switchport mode trunk
+        !
+        ! Fa0/1 ici = Gi0/3 du lab PnetLab
+        interface FastEthernet0/1
+         description SRV-FICHIERS
+         switchport mode access
+         switchport access vlan 10
+         spanning-tree portfast
+        !
+        interface Vlan10
+         ip address 10.5.10.1 255.255.255.0
+         no shutdown
+        !
+        line con 0
+         logging synchronous
+        !
+  ACC-1:
+    pt_initial: |
+        hostname ACC-1
+        no ip domain-lookup
+        !
+        spanning-tree mode rapid-pvst
+        !
+        vlan 10
+         name BUREAUX
+        !
+        interface range GigabitEthernet0/1 - 2
+         description Vers DIST-SW
+         switchport mode trunk
+         channel-group 1 mode on
+        !
+        interface Port-channel1
+         description Vers DIST-SW (2 x 1 Gbit/s)
+         switchport mode trunk
+        !
+        ! Fa0/1 et Fa0/2 ici = Gi0/3 et Gi1/0 du lab PnetLab
+        interface FastEthernet0/1
+         description PC-1
+         switchport mode access
+         switchport access vlan 10
+         spanning-tree portfast
+        !
+        interface FastEthernet0/2
+         description PC-2
+         switchport mode access
+         switchport access vlan 10
+         spanning-tree portfast
+        !
+        interface Vlan10
+         ip address 10.5.10.2 255.255.255.0
+         no shutdown
+        !
+        line con 0
+         logging synchronous
+        !
+    pt_final: |
+        hostname ACC-1
+        no ip domain-lookup
+        !
+        spanning-tree mode rapid-pvst
+        !
+        vlan 10
+         name BUREAUX
+        !
+        interface range GigabitEthernet0/1 - 2
+         description Vers DIST-SW
+         switchport mode trunk
+         channel-group 1 mode active
+        !
+        interface Port-channel1
+         description Vers DIST-SW (2 x 1 Gbit/s)
+         switchport mode trunk
+        !
+        ! Fa0/1 et Fa0/2 ici = Gi0/3 et Gi1/0 du lab PnetLab
+        interface FastEthernet0/1
+         description PC-1
+         switchport mode access
+         switchport access vlan 10
+         spanning-tree portfast
+        !
+        interface FastEthernet0/2
+         description PC-2
+         switchport mode access
+         switchport access vlan 10
+         spanning-tree portfast
+        !
+        interface Vlan10
+         ip address 10.5.10.2 255.255.255.0
+         no shutdown
+        !
+        line con 0
+         logging synchronous
+        !

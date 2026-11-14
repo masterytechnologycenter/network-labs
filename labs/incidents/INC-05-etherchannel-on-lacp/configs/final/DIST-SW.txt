@@ -1,0 +1,35 @@
+! INC-05 · DIST-SW · configuration finale (inchangée : côté sain)
+hostname DIST-SW
+no ip domain-lookup
+!
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 priority 4096
+!
+vlan 10
+ name BUREAUX
+!
+interface Port-channel1
+ description Vers ACC-1 (2 x 1 Gbit/s)
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface range GigabitEthernet0/1 - 2
+ description Vers ACC-1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode active
+!
+interface GigabitEthernet0/3
+ description SRV-FICHIERS
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast edge
+!
+interface Vlan10
+ ip address 10.5.10.1 255.255.255.0
+ no shutdown
+!
+line con 0
+ logging synchronous
+!
+end

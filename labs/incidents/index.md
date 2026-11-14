@@ -6,3 +6,4 @@ Des pannes réelles de production, reproduites dans un lab PnetLab à téléchar
 |---|---|---|---|
 | [INC-01](INC-01-ospf-mtu-gre-ipsec/README.md) | OSPF bloqué en EXSTART après une migration GRE/IPsec | 3.3.a · 4.5 | CCNA → CCNP |
 | [INC-02](INC-02-boucle-stp-bpdufilter/README.md) | Boucle de niveau 2 : tout un étage coupé par un switch de bureau | 2.5.d · 4.7.c | CCNA |
+| [INC-05](INC-05-etherchannel-on-lacp/README.md) | EtherChannel qui ne monte pas : mode on contre LACP active | 2.1 | CCNA |
