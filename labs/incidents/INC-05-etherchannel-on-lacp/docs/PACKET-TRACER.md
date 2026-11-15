@@ -62,7 +62,7 @@ interface Port-channel1
  description Vers ACC-1 (2 x 1 Gbit/s)
  switchport mode trunk
 !
-! Fa0/1 ici = Gi0/3 du lab PnetLab
+! Fa0/1 ici = Gi0/3 du lab PNETLab
 interface FastEthernet0/1
  description SRV-FICHIERS
  switchport mode access
@@ -104,7 +104,7 @@ interface Port-channel1
  description Vers DIST-SW (2 x 1 Gbit/s)
  switchport mode trunk
 !
-! Fa0/1 et Fa0/2 ici = Gi0/3 et Gi1/0 du lab PnetLab
+! Fa0/1 et Fa0/2 ici = Gi0/3 et Gi1/0 du lab PNETLab
 interface FastEthernet0/1
  description PC-1
  switchport mode access

@@ -2,7 +2,17 @@
 
 | Parcours | Niveau | Objectif CCNA v2 | Plateforme | Durée |
 |---|---|---|---|---|
-| Débutants | Débutant | 2.1 switchs et routeurs, couche 2 et couche 3 | Packet Tracer · PnetLab / EVE-NG (IOL, VPCS) | 10 à 20 min |
+| Débutants | Débutant | 2.1 switchs et routeurs, couche 2 et couche 3 | Packet Tracer · PNETLab / EVE-NG (IOL, VPCS) | 10 à 20 min |
+
+<!-- import-lab -->
+!!! download "Importer ce lab dans EVE-NG ou PNETLab"
+
+    [:material-download: Télécharger le .zip](topology/Debutants-01-Switch-vs-Routeur.zip){ .md-button .md-button--primary }
+    [Le fichier .unl seul](topology/Debutants-01-Switch-vs-Routeur.unl){ .md-button }
+
+    **EVE-NG** : menu *Import*, choisis le `.zip`. **PNETLab** : importe le `.zip` ou le `.unl`.
+    Testé sur EVE-NG Community 5.0.1 et PNETLab. Les images (IOL, vIOS, VPCS, Palo Alto…) ne sont pas fournies : si le nom de ton image diffère, choisis la tienne dans les réglages du nœud.
+<!-- /import-lab -->
 
 Le lab de la vidéo DEB-01 : tu construis deux réseaux reliés par un routeur, puis tu **observes** ce que la vidéo montre (table MAC qui se remplit, passerelle, adresses MAC qui changent à chaque saut).
 
@@ -19,7 +29,7 @@ Le lab de la vidéo DEB-01 : tu construis deux réseaux reliés par un routeur, 
   192.168.10.0/24       192.168.20.0/24
 ```
 
-| Équipement | Image PnetLab | Rôle | Adresses |
+| Équipement | Image PNETLab | Rôle | Adresses |
 |---|---|---|---|
 | R1 | IOL L3 | Routeur, passerelle des deux réseaux | e0/0 192.168.10.1/24 · e0/1 192.168.20.1/24 |
 | SW1, SW2 | IOL L2 | Switchs (VLAN 1, sans configuration) | — |
@@ -29,7 +39,7 @@ Le lab de la vidéo DEB-01 : tu construis deux réseaux reliés par un routeur, 
 Dans la vidéo, les interfaces du routeur s'appellent `G0/0` et `G0/1` (routeur Cisco physique ou Packet Tracer). Sur une image IOL, ce sont `e0/0` et `e0/1` : même rôle.
 
 **Packet Tracer :** construis le lab en 5 à 10 min avec la fiche [docs/PACKET-TRACER.md](docs/PACKET-TRACER.md) (blocs CLI prêts à coller dans `configs/packet-tracer/`).
-**PnetLab / EVE-NG :** importe `topology/Debutants-01-Switch-vs-Routeur.unl` (images IOL et VPCS non fournies).
+**PNETLab / EVE-NG :** importe `topology/Debutants-01-Switch-vs-Routeur.unl` (images IOL et VPCS non fournies).
 
 ## Ta mission
 

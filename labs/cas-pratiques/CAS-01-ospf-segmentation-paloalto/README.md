@@ -2,6 +2,16 @@
 
 **Parcours :** Cas pratiques · **Niveau :** Avancé · **Durée :** ≈ 6 h · **Nœuds :** 16
 
+<!-- import-lab -->
+!!! download "Importer ce lab dans EVE-NG ou PNETLab"
+
+    [:material-download: Télécharger le .zip](topology/CAS-01-OSPF-Segmentation-PaloAlto.zip){ .md-button .md-button--primary }
+    [Le fichier .unl seul](topology/CAS-01-OSPF-Segmentation-PaloAlto.unl){ .md-button }
+
+    **EVE-NG** : menu *Import*, choisis le `.zip`. **PNETLab** : importe le `.zip` ou le `.unl`.
+    Testé sur EVE-NG Community 5.0.1 et PNETLab. Les images (IOL, vIOS, VPCS, Palo Alto…) ne sont pas fournies : si le nom de ton image diffère, choisis la tienne dans les réglages du nœud.
+<!-- /import-lab -->
+
 Une entreprise, deux sites, un datacenter et un partenaire qui ne doit joindre que l'application web. Tu sécurises l'ensemble à deux niveaux : ce que le routage annonce, et ce que le pare-feu autorise.
 
 ## Topologie
@@ -23,7 +33,7 @@ La matrice de câblage complète et le plan d'adressage sont dans le PDF (pages 
 - ✅ Résultats obtenus avec captures (PDF) : bientôt disponible
 
 ## Fichiers du lab
-- Topologie PnetLab / EVE-NG : `topology/CAS-01-OSPF-Segmentation-PaloAlto.unl` (les 16 nœuds câblés, sans configuration : tu la construis en suivant le PDF)
+- Topologie PNETLab / EVE-NG : `topology/CAS-01-OSPF-Segmentation-PaloAlto.unl` (les 16 nœuds câblés, sans configuration : tu la construis en suivant le PDF)
 - Schéma : `diagrams/topology.png` et `topology.svg`
 - Images : IOL L3 et L2, PA-VM PAN-OS 10.x, VPCS (non fournies)
 

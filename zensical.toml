@@ -13,7 +13,7 @@ repo_name = "masterytechnologycenter/network-labs"
 # Pas de "nav" : le menu est construit automatiquement à partir des dossiers de labs/.
 # Chaque nouveau lab apparaît donc sans avoir à modifier ce fichier.
 
-# extra_css = ["stylesheets/extra.css"]
+extra_css = ["stylesheets/mtc.css"]
 # extra_javascript = ["javascripts/extra.js"]
 
 [project.theme]
@@ -83,6 +83,9 @@ link = "https://www.youtube.com/@MasteryTechnologyCenter"
 [[project.extra.social]]
 icon = "fontawesome/brands/tiktok"
 link = "https://www.tiktok.com/@masterytechcenter"
+
+# Menu : fichiers .nav.yml écrits par scripts/make_nav.py (vrais titres, parcours vides masqués)
+[project.plugins.awesome-nav]
 
 [project.markdown_extensions]
 abbr = {}

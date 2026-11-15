@@ -1,0 +1,4 @@
+# Généré par scripts/make_nav.py : ne pas modifier à la main.
+nav:
+  - index.md
+  - "PT-TP01 · Le réseau d'un petit bureau… et la passerelle oubliée": PT-TP01-petit-bureau

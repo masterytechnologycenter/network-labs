@@ -1,0 +1,5 @@
+# Généré par scripts/make_nav.py : ne pas modifier à la main.
+nav:
+  - index.md
+  - "DEB-01 · Switch ou routeur : qui fait quoi ?": DEB-01-switch-vs-routeur
+  - "DEB-07 · Trunk 802.1Q : plusieurs VLAN, un seul câble": DEB-07-trunk-8021q

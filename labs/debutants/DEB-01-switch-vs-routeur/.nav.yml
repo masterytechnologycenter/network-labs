@@ -1,0 +1,4 @@
+# Généré par scripts/make_nav.py : ne pas modifier à la main.
+nav:
+  - README.md
+  - "Construire dans Packet Tracer": docs/PACKET-TRACER.md

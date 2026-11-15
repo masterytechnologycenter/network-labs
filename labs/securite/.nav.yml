@@ -1,0 +1,5 @@
+# Généré par scripts/make_nav.py : ne pas modifier à la main.
+nav:
+  - index.md
+  - "SEC-01 · Palo Alto : la DMZ injoignable après un NAT": SEC-01-paloalto-nat-dmz
+  - "SEC-01 · DMZ : le site web coupé par une carte de sauvegarde": SEC-01-retour-asymetrique-dmz

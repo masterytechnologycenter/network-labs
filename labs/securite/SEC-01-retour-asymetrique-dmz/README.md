@@ -3,6 +3,16 @@
 **Série :** Incidents sécurité · **Niveau :** intermédiaire · **Auteur :** Hilaire TCHOUATEU
 **Versions testées :** Palo Alto PAN-OS 10.2.9 · IOL L3 15.4 (en rôle d'hôte et de serveur)
 
+<!-- import-lab -->
+!!! download "Importer ce lab dans EVE-NG ou PNETLab"
+
+    [:material-download: Télécharger le .zip](topology/Securite-01-PaloAlto-Retour-Asymetrique.zip){ .md-button .md-button--primary }
+    [Le fichier .unl seul](topology/Securite-01-PaloAlto-Retour-Asymetrique.unl){ .md-button }
+
+    **EVE-NG** : menu *Import*, choisis le `.zip`. **PNETLab** : importe le `.zip` ou le `.unl`.
+    Testé sur EVE-NG Community 5.0.1 et PNETLab. Les images (IOL, vIOS, VPCS, Palo Alto…) ne sont pas fournies : si le nom de ton image diffère, choisis la tienne dans les réglages du nœud.
+<!-- /import-lab -->
+
 ## Le ticket
 
 > **INC0051207 · P1 · Site web client injoignable depuis Internet**
@@ -24,7 +34,7 @@ Le site est publié en HTTPS sous l’adresse publique `203.0.113.10` (NAT de de
 
 ## Mise en route
 
-1. Importe `topology/Securite-01-PaloAlto-Retour-Asymetrique.unl` dans PnetLab ou EVE-NG et démarre les nœuds (le Palo Alto met plusieurs minutes).
+1. Importe `topology/Securite-01-PaloAlto-Retour-Asymetrique.unl` dans PNETLab ou EVE-NG et démarre les nœuds (le Palo Alto met plusieurs minutes).
 2. Les IOL chargent leur configuration seuls. Pour `PA-FW` : connexion `admin` / `admin`, changement du mot de passe, puis `configure` et colle `configs/initial/PA-FW.txt`.
 
 ## Ta mission

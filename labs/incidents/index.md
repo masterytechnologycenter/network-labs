@@ -1,6 +1,6 @@
 # Incidents en entreprise
 
-Des pannes réelles de production, reproduites dans un lab PnetLab à télécharger. Chaque incident accompagne une vidéo courte de la série **Incidents en entreprise** : le symptôme, la preuve dans les logs, le piège à éviter et la bonne correction. À toi de réparer avant de regarder la solution.
+Des pannes réelles de production, reproduites dans un lab PNETLab à télécharger. Chaque incident accompagne une vidéo courte de la série **Incidents en entreprise** : le symptôme, la preuve dans les logs, le piège à éviter et la bonne correction. À toi de réparer avant de regarder la solution.
 
 | ID | Incident | Objectifs CCNA v2 | Niveau |
 |---|---|---|---|

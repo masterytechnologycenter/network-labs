@@ -1,0 +1,6 @@
+# Généré par scripts/make_nav.py : ne pas modifier à la main.
+nav:
+  - index.md
+  - "INC-01 · OSPF bloqué en EXSTART après une migration GRE/IPsec": INC-01-ospf-mtu-gre-ipsec
+  - "INC-02 · Boucle de niveau 2": INC-02-boucle-stp-bpdufilter
+  - "INC-05 · EtherChannel qui ne monte pas": INC-05-etherchannel-on-lacp

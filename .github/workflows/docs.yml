@@ -19,6 +19,9 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install zensical
+      # Menu (vrais titres, parcours vides masqués) et .zip pour EVE-NG, refaits à chaque publication
+      - run: python scripts/make_nav.py
+      - run: python scripts/zip_unl.py
       - run: zensical build --clean
       - uses: actions/upload-pages-artifact@v5
         with:
