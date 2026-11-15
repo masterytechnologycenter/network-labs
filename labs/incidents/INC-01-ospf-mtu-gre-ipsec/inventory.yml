@@ -1,6 +1,8 @@
 lab:
   id: INC-01
   title: "OSPF bloqué en EXSTART après une migration GRE/IPsec"
+  ticket: "Lundi 9 h 02. Lyon ne joint plus le siège depuis la migration du lien vers un tunnel GRE over IPsec. Le tunnel est monté, les routeurs se voient… mais aucune route OSPF n'est apprise."
+  ticket_label: "TICKET INC-01 · P2"
   parcours: incidents
   niveau: "CCNA → CCNP"
   ccna_v2: ["3.3.a", "4.5"]
@@ -46,13 +48,14 @@ nodes:
 
 # Génération du .unl : python scripts/make_unl.py labs/incidents/INC-01-ospf-mtu-gre-ipsec
 eve:
+  habillage: mtc
   name: Incident-01-OSPF-MTU
   nodes:
-    SIEGE:    {template: iol-l3, icon: Router-3D-Gen1-S.svg,        position: [300, 240]}
-    ISP-R:    {template: iol-l3, icon: Router-3D-Gen1-S.svg,        position: [600, 240]}
-    LYON:     {template: iol-l3, icon: Router-3D-Gen1-S.svg,        position: [900, 240]}
-    SW-SIEGE: {template: iol-l2, icon: Switch-3D-L2-S.svg,          position: [300, 440]}
-    SW-LYON:  {template: iol-l2, icon: Switch-3D-L2-S.svg,          position: [900, 440]}
+    SIEGE:    {template: iol-l3, icon: Router-2D-Gen-Dark-S.svg,        position: [300, 240]}
+    ISP-R:    {template: iol-l3, icon: Router-2D-Gen-Dark-S.svg,        position: [600, 240]}
+    LYON:     {template: iol-l3, icon: Router-2D-Gen-Dark-S.svg,        position: [900, 240]}
+    SW-SIEGE: {template: iol-l2, icon: Switch-2D-L2-Generic-S.svg,          position: [300, 440]}
+    SW-LYON:  {template: iol-l2, icon: Switch-2D-L2-Generic-S.svg,          position: [900, 440]}
     PC-SIEGE: {template: vpcs,   icon: PC-2D-Desktop-Generic-S.svg, position: [300, 640]}
     PC-LYON:  {template: vpcs,   icon: PC-2D-Desktop-Generic-S.svg, position: [900, 640]}
   links:
@@ -71,8 +74,8 @@ eve:
     - {x: 330, y: 105, text: "Tunnel0 · GRE/IPsec · 172.16.0.0/30 (OSPF)", border: "#53AC21", color: "#2B6A10", bold: true}
     - {x: 372, y: 275, text: "203.0.113.0/30", box: false}
     - {x: 728, y: 275, text: "198.51.100.0/30", box: false}
-    - {x: 165, y: 300, text: "Lo0 1.1.1.1 (RID)\nTu0 172.16.0.1/30\nip mtu 1476"}
-    - {x: 765, y: 300, text: "Lo0 2.2.2.2 (RID)\nTu0 172.16.0.2/30\nip mtu 1400"}
+    - {x: 335, y: 300, text: "Lo0 1.1.1.1 (RID)\nTu0 172.16.0.1/30\nip mtu 1476"}
+    - {x: 935, y: 300, text: "Lo0 2.2.2.2 (RID)\nTu0 172.16.0.2/30\nip mtu 1400"}
     - {x: 530, y: 330, text: "Internet simulé\nsans OSPF", mono: false}
     - {x: 380, y: 455, text: "LAN 10.10.0.0/24", box: false}
     - {x: 760, y: 455, text: "LAN 10.20.0.0/24", box: false}
