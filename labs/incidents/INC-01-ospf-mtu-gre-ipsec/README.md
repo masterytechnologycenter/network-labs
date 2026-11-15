@@ -2,7 +2,17 @@
 
 | Parcours | Niveau | Objectifs CCNA v2 | Plateforme | Durée |
 |---|---|---|---|---|
-| Incidents en entreprise | CCNA → CCNP | 3.3.a adjacences OSPF · 4.5 VPN IPsec | PnetLab / EVE-NG (IOL, VPCS) | 30 min |
+| Incidents en entreprise | CCNA → CCNP | 3.3.a adjacences OSPF · 4.5 VPN IPsec | PNETLab / EVE-NG (IOL, VPCS) | 30 min |
+
+<!-- import-lab -->
+!!! download "Importer ce lab dans EVE-NG ou PNETLab"
+
+    [:material-download: Télécharger le .zip](topology/Incident-01-OSPF-MTU.zip){ .md-button .md-button--primary }
+    [Le fichier .unl seul](topology/Incident-01-OSPF-MTU.unl){ .md-button }
+
+    **EVE-NG** : menu *Import*, choisis le `.zip`. **PNETLab** : importe le `.zip` ou le `.unl`.
+    Testé sur EVE-NG Community 5.0.1 et PNETLab. Les images (IOL, vIOS, VPCS, Palo Alto…) ne sont pas fournies : si le nom de ton image diffère, choisis la tienne dans les réglages du nœud.
+<!-- /import-lab -->
 
 !!! danger "Ticket INC-01 · Priorité P2"
     **Lundi 9 h 02.** Le site de Lyon ne joint plus le siège. Le week-end dernier, le lien Lyon ↔ siège a été migré vers un tunnel **GRE over IPsec**. Le tunnel IPsec est bien monté, les routeurs se voient… mais aucune route OSPF n'est apprise.
@@ -21,7 +31,7 @@
 
 ## Démarrer le lab
 
-1. Importe la topologie du dossier `topology/` dans PnetLab ou EVE-NG (les images IOL et VPCS ne sont pas fournies).
+1. Importe la topologie du dossier `topology/` dans PNETLab ou EVE-NG (les images IOL et VPCS ne sont pas fournies).
 2. Applique les configurations de `configs/initial/` : elles contiennent la panne.
 3. Attends une minute que le tunnel IPsec se monte (`show crypto isakmp sa` → `QM_IDLE`).
 

@@ -32,13 +32,13 @@ Renomme chaque équipement (clic sur le nom sous l'icône) pour retrouver les no
 | RH-2 | FastEthernet0 | ACC-2 | FastEthernet0/2 | Copper Straight-Through |
 | INVITE-2 | FastEthernet0 | ACC-2 | FastEthernet0/3 | Copper Straight-Through |
 
-### Différences avec le lab PnetLab (vIOS L2)
+### Différences avec le lab PNETLab (vIOS L2)
 
-| Lab PnetLab (vIOS L2) | Packet Tracer (2960-24TT) | Pourquoi |
+| Lab PNETLab (vIOS L2) | Packet Tracer (2960-24TT) | Pourquoi |
 |---|---|---|
 | `Gi0/0` (lien entre les switchs) | `GigabitEthernet0/1` | Le 2960 n'a pas de port Gi0/0 : ses deux ports Gigabit sont Gi0/1 et Gi0/2. |
 | `Gi0/1`, `Gi0/2`, `Gi0/3` (postes) | `FastEthernet0/1`, `0/2`, `0/3` | Ports d'accès du 2960. |
-| `switchport trunk encapsulation dot1q` | **ligne retirée** | Le 2960 de Packet Tracer refuse cette commande : il ne fait que du 802.1Q. vIOS L2 l'accepte, elle reste dans les configs PnetLab. |
+| `switchport trunk encapsulation dot1q` | **ligne retirée** | Le 2960 de Packet Tracer refuse cette commande : il ne fait que du 802.1Q. vIOS L2 l'accepte, elle reste dans les configs PNETLab. |
 | `spanning-tree portfast edge` | `spanning-tree portfast` | Syntaxe du 2960 de Packet Tracer. |
 
 Le reste (noms, VLAN 10, 20, 30 et 99, adresses, VLAN natif 99, VLAN autorisés) est identique.
@@ -75,7 +75,7 @@ vlan 30
 vlan 99
  name NATIF
 !
-! Gi0/1 ici = Gi0/0 du lab PnetLab (lien vers l'autre switch)
+! Gi0/1 ici = Gi0/0 du lab PNETLab (lien vers l'autre switch)
 interface GigabitEthernet0/1
  description LIEN-VERS-ACC-2
  switchport mode access
@@ -124,7 +124,7 @@ vlan 30
 vlan 99
  name NATIF
 !
-! Gi0/1 ici = Gi0/0 du lab PnetLab (lien vers l'autre switch)
+! Gi0/1 ici = Gi0/0 du lab PNETLab (lien vers l'autre switch)
 interface GigabitEthernet0/1
  description LIEN-VERS-ACC-1
  switchport mode access

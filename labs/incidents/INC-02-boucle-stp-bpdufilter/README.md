@@ -2,7 +2,17 @@
 
 | Parcours | Niveau | Objectifs CCNA v2 | Plateforme | Durée |
 |---|---|---|---|---|
-| Incidents en entreprise | CCNA | 2.5.d PortFast et BPDU guard · 4.7.c storm control | PnetLab / EVE-NG (vIOS L2, VPCS) | 30 min |
+| Incidents en entreprise | CCNA | 2.5.d PortFast et BPDU guard · 4.7.c storm control | PNETLab / EVE-NG (vIOS L2, VPCS) | 30 min |
+
+<!-- import-lab -->
+!!! download "Importer ce lab dans EVE-NG ou PNETLab"
+
+    [:material-download: Télécharger le .zip](topology/Incident-02-STP-Boucle.zip){ .md-button .md-button--primary }
+    [Le fichier .unl seul](topology/Incident-02-STP-Boucle.unl){ .md-button }
+
+    **EVE-NG** : menu *Import*, choisis le `.zip`. **PNETLab** : importe le `.zip` ou le `.unl`.
+    Testé sur EVE-NG Community 5.0.1 et PNETLab. Les images (IOL, vIOS, VPCS, Palo Alto…) ne sont pas fournies : si le nom de ton image diffère, choisis la tienne dans les réglages du nœud.
+<!-- /import-lab -->
 
 !!! danger "Ticket INC-02 · Priorité P1"
     **Mardi 10 h 47.** Tout le 3e étage est coupé : plus de réseau, plus de téléphonie, les voyants des switchs clignotent en continu. Un nouveau collaborateur s'est installé ce matin au bureau 3.12 avec son propre petit switch.

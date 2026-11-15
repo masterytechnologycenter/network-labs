@@ -2,7 +2,7 @@
 
 # Network Labs
 
-Labs réseau et sécurité reproductibles sur PnetLab / EVE-NG :
+Labs réseau et sécurité reproductibles sur PNETLab / EVE-NG :
 topologie, configurations initiales et finales, LLD et diagrammes.
 Les images d'équipements ne sont pas fournies.
 

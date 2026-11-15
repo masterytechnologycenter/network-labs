@@ -1,0 +1,8 @@
+# Généré par scripts/make_nav.py : ne pas modifier à la main.
+nav:
+  - "Accueil": index.md
+  - "Débutants": debutants
+  - "TP Packet Tracer": tp-packet-tracer
+  - "Incidents en entreprise": incidents
+  - "Sécurité réseau": securite
+  - "Cas pratiques": cas-pratiques

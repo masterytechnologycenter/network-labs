@@ -2,7 +2,17 @@
 
 | Parcours | Niveau | Objectif CCNA v2 | Plateforme | Durée |
 |---|---|---|---|---|
-| Incidents en entreprise | CCNA | 2.1 EtherChannel (LACP) | PnetLab / EVE-NG (vIOS L2, VPCS) · Packet Tracer | 20 min |
+| Incidents en entreprise | CCNA | 2.1 EtherChannel (LACP) | PNETLab / EVE-NG (vIOS L2, VPCS) · Packet Tracer | 20 min |
+
+<!-- import-lab -->
+!!! download "Importer ce lab dans EVE-NG ou PNETLab"
+
+    [:material-download: Télécharger le .zip](topology/Incident-05-EtherChannel-On-LACP.zip){ .md-button .md-button--primary }
+    [Le fichier .unl seul](topology/Incident-05-EtherChannel-On-LACP.unl){ .md-button }
+
+    **EVE-NG** : menu *Import*, choisis le `.zip`. **PNETLab** : importe le `.zip` ou le `.unl`.
+    Testé sur EVE-NG Community 5.0.1 et PNETLab. Les images (IOL, vIOS, VPCS, Palo Alto…) ne sont pas fournies : si le nom de ton image diffère, choisis la tienne dans les réglages du nœud.
+<!-- /import-lab -->
 
 !!! danger "Ticket INC-05 · Priorité P1"
     **Lundi 8 h 05.** Le switch d'accès du 2e étage a été remplacé cette nuit par un prestataire. Ce matin, plus aucun poste de l'étage n'accède au serveur de fichiers. Les deux câbles vers le switch de distribution sont bien branchés.
@@ -68,4 +78,4 @@ show logging | include EC-
 - Vidéo : à venir sur [TikTok](https://www.tiktok.com/@masterytechcenter) et [YouTube](https://www.youtube.com/@MasteryTechnologyCenter)
 - Téléchargement du lab complet : [INC-05-etherchannel-on-lacp.zip](https://github.com/masterytechnologycenter/network-labs/releases/download/INC-05/INC-05-etherchannel-on-lacp.zip)
 - Conception détaillée : [LLD](docs/LLD.md)
-- Lab voisin : [LAB 2.1 · L'EtherChannel ne monte pas](../../ccna-v2/LAB-2.1-etherchannel/README.md) (passive contre passive)
+- Lab voisin, dans la formation CCNA (bientôt en ligne) : LAB 2.1 · L'EtherChannel ne monte pas (passive contre passive)

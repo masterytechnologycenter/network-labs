@@ -2,7 +2,17 @@
 
 | Parcours | Niveau | Thème | Plateforme | Durée |
 |---|---|---|---|---|
-| Sécurité réseau | Intermédiaire (PCNSA / PCNSE) | NAT de destination et règles de sécurité PAN-OS | PnetLab / EVE-NG (PAN-OS 10.2, IOL, VPCS) | 30 min |
+| Sécurité réseau | Intermédiaire (PCNSA / PCNSE) | NAT de destination et règles de sécurité PAN-OS | PNETLab / EVE-NG (PAN-OS 10.2, IOL, VPCS) | 30 min |
+
+<!-- import-lab -->
+!!! download "Importer ce lab dans EVE-NG ou PNETLab"
+
+    [:material-download: Télécharger le .zip](topology/Securite-01-PaloAlto-NAT-DMZ.zip){ .md-button .md-button--primary }
+    [Le fichier .unl seul](topology/Securite-01-PaloAlto-NAT-DMZ.unl){ .md-button }
+
+    **EVE-NG** : menu *Import*, choisis le `.zip`. **PNETLab** : importe le `.zip` ou le `.unl`.
+    Testé sur EVE-NG Community 5.0.1 et PNETLab. Les images (IOL, vIOS, VPCS, Palo Alto…) ne sont pas fournies : si le nom de ton image diffère, choisis la tienne dans les réglages du nœud.
+<!-- /import-lab -->
 
 !!! danger "Ticket INC0042390 · Priorité P2"
     **Lundi 8 h 02.** Le nouveau site web de l’entreprise, publié ce week-end en DMZ derrière le Palo Alto, est injoignable depuis Internet. Le NAT a été vérifié deux fois, la règle de sécurité existe… et rien ne passe.

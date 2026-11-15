@@ -3,6 +3,16 @@
 **Niveau** : débutant · **Objectif CCNA v2** : 2.1.b, trunks 802.1Q et VLAN natif · **Auteur** : Hilaire TCHOUATEU
 **Images** : vIOS L2 (IOS 15.2), VPCS · **Fichier** : `topology/DEB-07-Trunk-8021Q.unl`
 
+<!-- import-lab -->
+!!! download "Importer ce lab dans EVE-NG ou PNETLab"
+
+    [:material-download: Télécharger le .zip](topology/DEB-07-Trunk-8021Q.zip){ .md-button .md-button--primary }
+    [Le fichier .unl seul](topology/DEB-07-Trunk-8021Q.unl){ .md-button }
+
+    **EVE-NG** : menu *Import*, choisis le `.zip`. **PNETLab** : importe le `.zip` ou le `.unl`.
+    Testé sur EVE-NG Community 5.0.1 et PNETLab. Les images (IOL, vIOS, VPCS, Palo Alto…) ne sont pas fournies : si le nom de ton image diffère, choisis la tienne dans les réglages du nœud.
+<!-- /import-lab -->
+
 ## Ticket
 « COMPTA-1 (étage 1) ne joint pas COMPTA-2 (étage 2). Ils sont pourtant tous les deux dans le VLAN 10. »
 

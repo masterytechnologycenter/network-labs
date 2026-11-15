@@ -2,6 +2,16 @@
 
 **Parcours :** Cas pratiques · **Niveau :** Avancé · **Durée :** ≈ 7 h · **Nœuds :** 15 · **Tâches :** 11
 
+<!-- import-lab -->
+!!! download "Importer ce lab dans EVE-NG ou PNETLab"
+
+    [:material-download: Télécharger le .zip](topology/CAS-02-BGP-Edge-Security-PaloAlto.zip){ .md-button .md-button--primary }
+    [Le fichier .unl seul](topology/CAS-02-BGP-Edge-Security-PaloAlto.unl){ .md-button }
+
+    **EVE-NG** : menu *Import*, choisis le `.zip`. **PNETLab** : importe le `.zip` ou le `.unl`.
+    Testé sur EVE-NG Community 5.0.1 et PNETLab. Les images (IOL, vIOS, VPCS, Palo Alto…) ne sont pas fournies : si le nom de ton image diffère, choisis la tienne dans les réglages du nœud.
+<!-- /import-lab -->
+
 NEXA Industries (AS 64496, préfixe PI 198.51.100.0/24) est multi-homée sur deux opérateurs : ISP-A (primaire) et ISP-B (secours). Un Palo Alto protège une DMZ publique et segmente l'interne en trois VRF (USERS, GUEST, SERVERS). À toi de maîtriser tous les leviers de chemin BGP, d'appliquer les recommandations de sécurité du routage Internet (RFC 7454, MANRS) et de faire passer chaque flux inter-segments par le pare-feu.
 
 ## Topologie

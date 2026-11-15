@@ -1,0 +1,5 @@
+# Généré par scripts/make_nav.py : ne pas modifier à la main.
+nav:
+  - README.md
+  - "Conception détaillée (LLD)": docs/LLD.md
+  - "Importer le lab": topology/LISEZMOI.md

@@ -1,0 +1,5 @@
+# Généré par scripts/make_nav.py : ne pas modifier à la main.
+nav:
+  - index.md
+  - "CAS-01 · Segmentation sécurisée": CAS-01-ospf-segmentation-paloalto
+  - "CAS-02 · BGP multi-homé sécurisé": CAS-02-bgp-edge-security
