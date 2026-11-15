@@ -1,18 +1,22 @@
 lab:
   id: DEB-07
   title: "Trunk 802.1Q : plusieurs VLAN, un seul câble"
+  ticket: "COMPTA-1 (étage 1) ne joint pas COMPTA-2 (étage 2). Ils sont pourtant tous les deux dans le VLAN 10."
+  ticket_label: "TICKET"
+  ccna_v2: ["2.1.b"]
   parcours: debutants
   niveau: débutant
   objectifs_ccna_v2: ["2.1.b · trunks 802.1Q et VLAN natif"]
   author: Hilaire TCHOUATEU
   images: "vIOS L2 (IOS 15.2) · VPCS"
 eve:
+  habillage: mtc
   name: DEB-07-Trunk-8021Q
   # Disposition alignée sur diagrams/topology.png (31/10/2026, pour l'enregistrement vidéo du lab démarré).
   # Positions = coin haut-gauche de l'icône, en pixels PnetLab (zoom 100 %).
   nodes:
-    ACC-1:    {template: vios-l2, icon: Switch-3D-L2-S.svg, position: [490, 415]}
-    ACC-2:    {template: vios-l2, icon: Switch-3D-L2-S.svg, position: [850, 415]}
+    ACC-1:    {template: vios-l2, icon: Switch-2D-L2-Generic-S.svg, position: [490, 415]}
+    ACC-2:    {template: vios-l2, icon: Switch-2D-L2-Generic-S.svg, position: [850, 415]}
     COMPTA-1: {template: vpcs, icon: PC-2D-Desktop-Generic-S.svg, position: [140, 185]}
     RH-1:     {template: vpcs, icon: PC-2D-Desktop-Generic-S.svg, position: [140, 405]}
     INVITE-1: {template: vpcs, icon: PC-2D-Desktop-Generic-S.svg, position: [140, 625]}
