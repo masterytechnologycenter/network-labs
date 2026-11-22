@@ -51,6 +51,7 @@ Les images d'équipements ne sont pas fournies.
 |----|-----|--------|-------|-----|
 | PT-TP01 | [Le réseau d'un petit bureau… et la passerelle oubliée](labs/tp-packet-tracer/PT-TP01-petit-bureau/README.md) | Débutant | 12/11/2026 | [.pkt](labs/tp-packet-tracer/PT-TP01-petit-bureau/topology/PT-TP01-petit-bureau.pkt) |
 | PT-TP02 | [Les deux nouveaux PC de l'accueil n'ont pas de réseau](labs/tp-packet-tracer/PT-TP02-relais-dhcp/README.md) | Débutant | 20/11/2026 | [.pkt](labs/tp-packet-tracer/PT-TP02-relais-dhcp/topology/PT-TP02-dhcp.pkt) |
+| PT-TP03 | [Le stagiaire est branché, mais rien ne marche](labs/tp-packet-tracer/PT-TP03-port-desactive/README.md) | Débutant | 26/11/2026 | [.pkt](labs/tp-packet-tracer/PT-TP03-port-desactive/topology/PT-TP03-panne.pkt) |
 
 ## Incidents en entreprise
 

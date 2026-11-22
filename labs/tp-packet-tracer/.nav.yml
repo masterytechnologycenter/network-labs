@@ -3,3 +3,4 @@ nav:
   - index.md
   - "PT-TP01 · Le réseau d'un petit bureau… et la passerelle oubliée": PT-TP01-petit-bureau
   - "PT-TP02 · Les deux nouveaux PC de l'accueil n'ont pas de réseau": PT-TP02-relais-dhcp
+  - "PT-TP03 · Le stagiaire est branché, mais rien ne marche": PT-TP03-port-desactive
